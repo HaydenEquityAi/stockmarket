@@ -25,7 +25,7 @@ export function Dashboard() {
       {/* Market Indices */}
       <div>
         <h2 className="text-xl font-bold text-gray-900 mb-4">Market Indices</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           <LiveIndexCard symbol="SPY" name="S&P 500" />
           <LiveIndexCard symbol="DIA" name="Dow Jones" />
           <LiveIndexCard symbol="QQQ" name="Nasdaq" />
@@ -33,7 +33,7 @@ export function Dashboard() {
       </div>
 
       {/* Portfolio Summary & Smart Money Alert */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div
           className="lg:col-span-2 bg-white rounded-xl p-6 border border-e2e8f0 shadow-md"
         >
@@ -90,13 +90,13 @@ export function Dashboard() {
       </div>
 
       {/* Trending Stocks & News */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-900">Trending Stocks</h2>
             <button className="text-[#2563eb] hover:text-[#1d4ed8] transition-colors">View All</button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <LiveStockCard symbol="NVDA" name="NVIDIA Corporation" />
             <LiveStockCard symbol="AAPL" name="Apple Inc." />
             <LiveStockCard symbol="MSFT" name="Microsoft Corporation" />

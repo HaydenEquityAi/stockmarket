@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMarketData } from '../hooks/useMarketData';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
@@ -12,9 +12,30 @@ export function LiveStockCard({ symbol, name, showChart = true }: LiveStockCardP
   const { data, isConnected, isLoading } = useMarketData(symbol);
 
   const isPositive = !!data && (data.change ?? 0) >= 0;
+  const [justUpdated, setJustUpdated] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
+  const [timeSinceUpdate, setTimeSinceUpdate] = useState('just now');
+
+  useEffect(() => {
+    if (data?.price != null) {
+      setJustUpdated(true);
+      setLastUpdate(data.timestamp || Date.now());
+      const t = setTimeout(() => setJustUpdated(false), 1000);
+      return () => clearTimeout(t);
+    }
+  }, [data?.price]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const seconds = Math.floor((Date.now() - lastUpdate) / 1000);
+      if (seconds < 60) setTimeSinceUpdate(`${seconds}s ago`);
+      else setTimeSinceUpdate(`${Math.floor(seconds / 60)}m ago`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lastUpdate]);
 
   return (
-    <div className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+    <div className={`relative bg-white rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow ${justUpdated ? 'ring-2 ring-green-400 transition-all' : ''}`}>
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="flex items-center gap-2">
@@ -62,9 +83,15 @@ export function LiveStockCard({ symbol, name, showChart = true }: LiveStockCardP
           {typeof data.volume === 'number' && (
             <div className="mt-2 text-xs text-gray-500">Vol: {data.volume.toLocaleString()}</div>
           )}
+          <div className="mt-1 text-xs text-gray-500">Updated {timeSinceUpdate}</div>
         </>
       ) : (
         <div className="text-gray-400">No data available</div>
+      )}
+      {isLoading && (
+        <div className="absolute top-2 right-2">
+          <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+        </div>
       )}
     </div>
   );

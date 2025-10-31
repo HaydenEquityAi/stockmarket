@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const provider = (process.env.MARKET_DATA_PROVIDER || 'polygon').toLowerCase();
-const pollMs = parseInt(process.env.MARKET_DATA_POLL_MS || '2000', 10);
+const pollMs = parseInt(process.env.MARKET_DATA_POLL_MS || '15000', 10);
 
 export type Quote = {
   symbol: string;
