@@ -16,7 +16,10 @@ export function Intelligence() {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/news`);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/news`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       const data = await response.json();
       setNews(data.news || []);
     } catch (error) {

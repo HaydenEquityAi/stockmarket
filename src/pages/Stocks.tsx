@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { newsItems } from '../lib/mock-data';
 import { Star, Plus, TrendingUp, TrendingDown } from 'lucide-react';
@@ -9,11 +9,54 @@ import { useMarketData } from '../hooks/useMarketData';
 export function Stocks() {
   const initial = { symbol: 'NVDA', name: 'NVIDIA Corporation' } as const;
   const [selectedStock, setSelectedStock] = useState<{ symbol: string; name: string }>(initial);
-  const [watchlist] = useState<Array<{ symbol: string; name: string }>>([
-    { symbol: 'NVDA', name: 'NVIDIA Corporation' },
-    { symbol: 'AAPL', name: 'Apple Inc.' },
-    { symbol: 'MSFT', name: 'Microsoft Corporation' },
-  ]);
+  const [watchlist, setWatchlist] = useState<Array<{ symbol: string; name: string }>>([]);
+  const API_URL = 'https://backend.brokerai.ai:8088/api';
+
+  const fetchWatchlist = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/watchlist`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const data = await response.json();
+      const symbols: string[] = data.watchlist || data.symbols || [];
+      setWatchlist(symbols.map((s) => ({ symbol: s, name: s })));
+    } catch (e) {
+      console.error('Failed to fetch watchlist:', e);
+    }
+  };
+
+  const addToWatchlist = async (symbol: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`${API_URL}/watchlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ symbol })
+      });
+      fetchWatchlist();
+    } catch (e) {
+      console.error('Failed to add to watchlist:', e);
+    }
+  };
+
+  const removeFromWatchlist = async (symbol: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`${API_URL}/watchlist/${symbol}`, {
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      setWatchlist((prev) => prev.filter((s) => s.symbol !== symbol));
+    } catch (e) {
+      console.error('Failed to remove from watchlist:', e);
+    }
+  };
+
+  useEffect(() => { fetchWatchlist(); }, []);
 
   const { data: selectedData } = useMarketData(selectedStock.symbol);
 
@@ -39,7 +82,7 @@ export function Stocks() {
           <div className="bg-white rounded-xl border border-e2e8f0 p-4 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-black">Watchlist</h3>
-              <button className="p-1 hover:bg-[#f1f5f9] rounded transition-colors">
+              <button className="p-1 hover:bg-[#f1f5f9] rounded transition-colors" onClick={() => addToWatchlist(selectedStock.symbol)}>
                 <Plus className="w-4 h-4 text-[#1e293b]" />
               </button>
             </div>
@@ -57,7 +100,9 @@ export function Stocks() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-mono">{stock.symbol}</span>
-                    <Star className="w-4 h-4 fill-current" />
+                    <button onClick={(e) => { e.stopPropagation(); removeFromWatchlist(stock.symbol); }}>
+                      <Star className="w-4 h-4 fill-current" />
+                    </button>
                   </div>
                   <div className="text-xs text-[#e2e8f0]">live</div>
                 </div>

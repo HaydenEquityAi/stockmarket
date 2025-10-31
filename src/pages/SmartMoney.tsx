@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { smartMoneyTrades } from '../lib/mock-data';
+import { useEffect, useState } from 'react';
 import { TradeCard } from '../components/TradeCard';
 import { TrendingUp, Award, Users } from 'lucide-react';
 
@@ -7,6 +6,27 @@ type TradeType = 'congress' | 'hedge-funds' | 'insiders';
 
 export function SmartMoney() {
   const [activeTab, setActiveTab] = useState<TradeType>('congress');
+  const [trades, setTrades] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const API_URL = 'https://backend.brokerai.ai:8088/api';
+
+  const fetchTrades = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/smart-money/trades`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const data = await response.json();
+      setTrades(data.trades || data || []);
+    } catch (e) {
+      console.error('Failed to fetch trades:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchTrades(); }, []);
 
   const leaderboard = [
     { rank: 1, name: 'Nancy Pelosi', trades: 47, success: 92.3, gain: '+$45.2M' },
@@ -16,7 +36,7 @@ export function SmartMoney() {
     { rank: 5, name: 'Josh Hawley', trades: 28, success: 76.8, gain: '+$12.5M' }
   ];
 
-  const filteredTrades = smartMoneyTrades.filter(trade => {
+  const filteredTrades = trades.filter((trade) => {
     if (activeTab === 'congress') return trade.role === 'Congress';
     if (activeTab === 'hedge-funds') return trade.role === 'Hedge Fund';
     if (activeTab === 'insiders') return trade.role === 'Insider';
@@ -102,9 +122,13 @@ export function SmartMoney() {
 
           {/* Trades Grid */}
           <div className="grid grid-cols-1 gap-4">
-            {filteredTrades.map((trade) => (
-              <TradeCard key={trade.id} trade={trade} />
-            ))}
+            {loading ? (
+              <div className="text-slate-400">Loading trades...</div>
+            ) : (
+              filteredTrades.map((trade) => (
+                <TradeCard key={trade.id || trade.tradeId} trade={trade} />
+              ))
+            )}
             
             {/* Additional mock trades based on tab */}
             {activeTab === 'congress' && (

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { sectorData, globalMarkets, marketBreadth, indices } from '../lib/mock-data';
+import { useEffect, useState } from 'react';
+import { sectorData, globalMarkets, marketBreadth } from '../lib/mock-data';
 import { TrendingUp, TrendingDown, Globe, Zap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { IndexCard } from '../components/IndexCard';
@@ -8,6 +8,32 @@ type MarketTab = 'indices' | 'sectors' | 'global' | 'commodities';
 
 export function Markets() {
   const [activeTab, setActiveTab] = useState<MarketTab>('indices');
+  const [indices, setIndices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const API_URL = 'https://backend.brokerai.ai:8088/api';
+
+  const fetchMarketData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const symbols = ['SPY', 'DIA', 'QQQ'];
+      const response = await fetch(`${API_URL}/market/quotes?symbols=${symbols.join(',')}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const data = await response.json();
+      setIndices(data.quotes || []);
+    } catch (e) {
+      console.error('Failed to fetch market data:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMarketData();
+    const i = setInterval(fetchMarketData, 60000);
+    return () => clearInterval(i);
+  }, []);
 
   const commodities = [
     { name: 'Gold', price: 2034.50, change: 12.30, changePercent: 0.61 },
@@ -115,9 +141,19 @@ export function Markets() {
         <div>
           <h2 className="text-slate-50 mb-4">Major Indices</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {indices.map((index) => (
-              <IndexCard key={index.symbol} index={index} />
-            ))}
+            {loading && indices.length === 0 ? (
+              <div className="text-slate-400">Loading indices...</div>
+            ) : (
+              indices.map((q) => (
+                <div key={q.symbol} className="bg-slate-800 rounded-xl border border-slate-700 p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-slate-50">{q.symbol}</div>
+                    <div className={`${q.change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>{q.changePercent?.toFixed(2)}%</div>
+                  </div>
+                  <div className="text-slate-50 font-mono text-xl">${q.price?.toFixed(2)}</div>
+                </div>
+              ))
+            )}
           </div>
 
           <h2 className="text-slate-50 mb-4">Other Indices</h2>
