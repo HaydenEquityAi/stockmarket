@@ -3,10 +3,33 @@ import { NewsCard } from '../components/NewsCard';
 import { LiveIndexCard } from '../components/LiveIndexCard';
 import { LiveStockCard } from '../components/LiveStockCard';
 import { newsItems, portfolioHoldings } from '../lib/mock-data';
+import React, { useEffect, useState } from 'react';
 import { ArrowUp, TrendingUp, DollarSign, Target } from 'lucide-react';
 
 
 export function Dashboard() {
+  const API_URL = 'https://backend.brokerai.ai:8088/api';
+  const [news, setNews] = useState<any[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+
+  const fetchNews = async () => {
+    try {
+      setNewsLoading(true);
+      const response = await fetch(`${API_URL}/news`);
+      const data = await response.json();
+      setNews(data.news || []);
+    } catch (error) {
+      console.error('Failed to fetch news:', error);
+    } finally {
+      setNewsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNews();
+    const interval = setInterval(fetchNews, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
   const totalValue = portfolioHoldings.reduce((sum, holding) => sum + holding.totalValue, 0);
   const totalGain = portfolioHoldings.reduce((sum, holding) => sum + holding.gain, 0);
   const totalGainPercent = (totalGain / (totalValue - totalGain)) * 100;
@@ -107,12 +130,17 @@ export function Dashboard() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-black">Market News</h2>
-            <button className="text-[#2563eb] hover:text-[#1d4ed8] transition-colors">View All</button>
+            <button className="text-[#2563eb] hover:text-[#1d4ed8] transition-colors" onClick={fetchNews} disabled={newsLoading}>
+              {newsLoading ? 'Refreshing...' : 'Refresh'}
+            </button>
           </div>
           <div className="space-y-3">
-            {newsItems.slice(0, 3).map((news) => (
-              <NewsCard key={news.id} news={news} />
+            {(news.length ? news : []).slice(0, 3).map((article: any) => (
+              <NewsCard key={article.id} article={article} />
             ))}
+            {!newsLoading && news.length === 0 && (
+              <div className="text-sm text-gray-500">No news available</div>
+            )}
           </div>
         </div>
       </div>

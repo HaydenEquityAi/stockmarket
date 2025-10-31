@@ -24,6 +24,7 @@ import {
   getNews,
   getNewsByStock
 } from '../controllers/newsController.js';
+import { fetchFinancialNews } from '../services/newsService.js';
 import {
   getSmartMoneyTrades,
   getLeaderboard
@@ -94,8 +95,15 @@ router.post('/portfolio/add', addToPortfolio);
 router.delete('/portfolio/:symbol', removeFromPortfolio);
 router.get('/portfolio/history', getPortfolioHistory);
 
-// News
-router.get('/news', getNews);
+// News (live financial news)
+router.get('/news', async (req, res) => {
+  try {
+    const news = await fetchFinancialNews();
+    res.json({ news, timestamp: new Date().toISOString(), count: news.length });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch news' });
+  }
+});
 router.get('/news/stock/:symbol', getNewsByStock);
 
 // Smart Money
