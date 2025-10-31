@@ -171,13 +171,13 @@ const watchlistSchema = new Schema<IWatchlist>({
 });
 
 // Export models
-export const Stock = mongoose.model<IStock>('Stock', stockSchema);
-export const Index = mongoose.model<IIndex>('Index', indexSchema);
-export const Portfolio = mongoose.model<IPortfolio>('Portfolio', portfolioSchema);
-export const News = mongoose.model<INews>('News', newsSchema);
-export const SmartMoneyTrade = mongoose.model<ISmartMoneyTrade>('SmartMoneyTrade', smartMoneyTradeSchema);
-export const MarketData = mongoose.model<IMarketData>('MarketData', marketDataSchema);
-export const Watchlist = mongoose.model<IWatchlist>('Watchlist', watchlistSchema);
+export const Stock = (mongoose.models.Stock as Model<IStock>) || mongoose.model<IStock>('Stock', stockSchema);
+export const Index = (mongoose.models.Index as Model<IIndex>) || mongoose.model<IIndex>('Index', indexSchema);
+export const Portfolio = (mongoose.models.Portfolio as Model<IPortfolio>) || mongoose.model<IPortfolio>('Portfolio', portfolioSchema);
+export const News = (mongoose.models.News as Model<INews>) || mongoose.model<INews>('News', newsSchema);
+export const SmartMoneyTrade = (mongoose.models.SmartMoneyTrade as Model<ISmartMoneyTrade>) || mongoose.model<ISmartMoneyTrade>('SmartMoneyTrade', smartMoneyTradeSchema);
+export const MarketData = (mongoose.models.MarketData as Model<IMarketData>) || mongoose.model<IMarketData>('MarketData', marketDataSchema);
+export const Watchlist = (mongoose.models.Watchlist as Model<IWatchlist>) || mongoose.model<IWatchlist>('Watchlist', watchlistSchema);
 
 // Export interfaces for use in other files
 export type {
