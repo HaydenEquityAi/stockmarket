@@ -4,7 +4,7 @@ import { LiveIndexCard } from '../components/LiveIndexCard';
 import { LiveStockCard } from '../components/LiveStockCard';
 import { newsItems, portfolioHoldings } from '../lib/mock-data';
 import { ArrowUp, TrendingUp, DollarSign, Target } from 'lucide-react';
-import { motion } from 'motion/react';
+
 
 export function Dashboard() {
   const totalValue = portfolioHoldings.reduce((sum, holding) => sum + holding.totalValue, 0);
@@ -34,9 +34,8 @@ export function Dashboard() {
 
       {/* Portfolio Summary & Smart Money Alert */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div
+        <div
           className="lg:col-span-2 bg-white rounded-xl p-6 border border-e2e8f0 shadow-md"
-          whileHover={{ y: -2 }}
         >
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-black">Portfolio Summary</h3>
@@ -70,11 +69,10 @@ export function Dashboard() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
+        <div
           className="bg-gradient-to-br from-[#2563eb] to-blue-700 rounded-xl p-6 border border-[#2563eb] shadow-lg shadow-[#2563eb]/20"
-          whileHover={{ scale: 1.02 }}
         >
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
@@ -88,7 +86,7 @@ export function Dashboard() {
           <button className="w-full bg-white text-[#2563eb] py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors">
             View Details
           </button>
-        </motion.div>
+        </div>
       </div>
 
       {/* Trending Stocks & News */}

@@ -1,4 +1,3 @@
-import { motion } from 'motion/react';
 import { Stock } from '../lib/mock-data';
 import { MiniChart } from './MiniChart';
 import { ArrowUp, ArrowDown } from 'lucide-react';
@@ -12,9 +11,8 @@ export function StockCard({ stock, onClick }: StockCardProps) {
   const isPositive = stock.change >= 0;
 
   return (
-    <motion.div
+    <div
       className="bg-white rounded-xl p-4 border border-e2e8f0 hover:border-[#2563eb]/20 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
-      whileHover={{ y: -2 }}
       onClick={onClick}
     >
       <div className="flex justify-between items-start mb-3">
@@ -36,6 +34,6 @@ export function StockCard({ stock, onClick }: StockCardProps) {
       <div className={`mt-2 font-mono ${isPositive ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
         {isPositive ? '+' : ''}${stock.change.toFixed(2)}
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -1,4 +1,3 @@
-import { motion } from 'motion/react';
 import { Trade } from '../lib/mock-data';
 import { TrendingUp, TrendingDown, Copy } from 'lucide-react';
 
@@ -11,9 +10,8 @@ export function TradeCard({ trade }: TradeCardProps) {
   const isGain = trade.priceChange >= 0;
 
   return (
-    <motion.div
+    <div
       className="bg-white rounded-xl p-5 border border-e2e8f0 hover:border-[#2563eb]/20 transition-all duration-300 shadow-sm hover:shadow-md"
-      whileHover={{ y: -2 }}
     >
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -51,6 +49,6 @@ export function TradeCard({ trade }: TradeCardProps) {
         <Copy className="w-4 h-4" />
         Copy Trade
       </button>
-    </motion.div>
+    </div>
   );
 }

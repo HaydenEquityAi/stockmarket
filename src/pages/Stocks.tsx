@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { newsItems } from '../lib/mock-data';
 import { Star, Plus, TrendingUp, TrendingDown } from 'lucide-react';
-import { motion } from 'motion/react';
 import { NewsCard } from '../components/NewsCard';
 import { LiveStockCard } from '../components/LiveStockCard';
 import { useMarketData } from '../hooks/useMarketData';
@@ -47,7 +46,7 @@ export function Stocks() {
             
             <div className="space-y-2">
               {watchlist.map((stock) => (
-                <motion.div
+                <div
                   key={stock.symbol}
                   onClick={() => setSelectedStock(stock)}
                   className={`p-3 rounded-lg cursor-pointer transition-all ${
@@ -55,14 +54,13 @@ export function Stocks() {
                       ? 'bg-[#2563eb] text-white'
                       : 'bg-[#f8fafc] hover:bg-[#f1f5f9] border border-e2e8f0'
                   }`}
-                  whileHover={{ x: 4 }}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-mono">{stock.symbol}</span>
                     <Star className="w-4 h-4 fill-current" />
                   </div>
                   <div className="text-xs text-[#e2e8f0]">live</div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
@@ -197,12 +195,9 @@ export function Stocks() {
                 const shares = Math.floor(Math.random() * 1000) + 100;
                 
                 return (
-                  <motion.div
+                  <div
                     key={i}
                     className="p-2 bg-[#f8fafc] rounded border border-e2e8f0"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
                   >
                     <div className="flex justify-between items-center">
                       <span className={isBuy ? 'text-[#16a34a]' : 'text-[#dc2626]'}>
@@ -214,7 +209,7 @@ export function Stocks() {
                     <div className="text-[#1e293b]/60">
                       {new Date().toLocaleTimeString()}
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>

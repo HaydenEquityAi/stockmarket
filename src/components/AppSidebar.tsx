@@ -1,5 +1,4 @@
 import { LayoutDashboard, TrendingUp, Briefcase, Lightbulb, Users, Globe, LineChart } from 'lucide-react';
-import { motion } from 'motion/react';
 
 interface AppSidebarProps {
   activePage: string;
@@ -38,7 +37,7 @@ export function AppSidebar({ activePage, onNavigate }: AppSidebarProps) {
             const isActive = activePage === item.id;
             
             return (
-              <motion.button
+              <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
@@ -46,12 +45,10 @@ export function AppSidebar({ activePage, onNavigate }: AppSidebarProps) {
                     ? 'bg-[#2563eb] text-white'
                     : 'text-[#1e293b] hover:text-black hover:bg-[#f1f5f9]'
                 }`}
-                whileHover={{ x: 4 }}
-                whileTap={{ scale: 0.98 }}
               >
                 <Icon className="w-5 h-5" />
                 <span>{item.label}</span>
-              </motion.button>
+              </button>
             );
           })}
         </div>

@@ -1,4 +1,3 @@
-import { motion } from 'motion/react';
 import { NewsItem } from '../lib/mock-data';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
@@ -17,9 +16,8 @@ export function NewsCard({ news }: NewsCardProps) {
   const Icon = config.icon;
 
   return (
-    <motion.div
+    <div
       className="bg-white rounded-lg p-4 border border-e2e8f0 hover:border-[#2563eb]/20 transition-all duration-200 shadow-sm"
-      whileHover={{ x: 4 }}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex-1">
@@ -42,6 +40,6 @@ export function NewsCard({ news }: NewsCardProps) {
           </span>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
