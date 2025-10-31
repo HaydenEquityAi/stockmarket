@@ -12,12 +12,17 @@ interface MarketData {
   timestamp: number;
 }
 
-export function useMarketData(symbol: string) {
+export function useMarketData(symbol?: string) {
   const [data, setData] = useState<MarketData | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (!symbol) {
+      setIsLoading(false);
+      return;
+    }
+
     let ws: WebSocket | null = null;
 
     async function fetchInitialQuote() {
@@ -40,13 +45,15 @@ export function useMarketData(symbol: string) {
 
     ws.onopen = () => {
       setIsConnected(true);
-      ws!.send(JSON.stringify({ type: 'subscribe', symbol: symbol.toUpperCase() }));
+      try {
+        ws!.send(JSON.stringify({ type: 'subscribe', symbol: symbol.toUpperCase() }));
+      } catch {}
     };
 
     ws.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data);
-        if (message.type === 'price_update' && message.symbol === symbol.toUpperCase()) {
+        if (message.type === 'price_update' && symbol && message.symbol === symbol.toUpperCase()) {
           setData({
             symbol: message.symbol,
             price: message.price,
@@ -71,7 +78,7 @@ export function useMarketData(symbol: string) {
 
     return () => {
       try {
-        if (ws && ws.readyState === WebSocket.OPEN) {
+        if (ws && ws.readyState === WebSocket.OPEN && symbol) {
           ws.send(JSON.stringify({ type: 'unsubscribe', symbol: symbol.toUpperCase() }));
         }
       } catch {}
