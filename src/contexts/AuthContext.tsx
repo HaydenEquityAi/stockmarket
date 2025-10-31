@@ -29,13 +29,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await fetch(`${API_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
       if (response.ok) {
         const data = await response.json();
-        setUser(data.user);
-      } else {
+        setUser(data.user || data);
+      } else if (response.status === 401) {
+        // Only logout on 401 (unauthorized) - token is invalid
+        console.log('Token invalid, logging out');
         logout();
+      } else {
+        // For other errors, keep the user logged in but log the error
+        console.error('Error fetching user:', response.status, response.statusText);
       }
     } catch (error) {
+      // Network errors shouldn't auto-logout - might be temporary
       console.error('Error fetching user:', error);
-      logout();
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +55,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error(err.message || 'Login failed');
     }
     const data = await response.json();
-    setToken(data.token); setUser(data.user); localStorage.setItem('token', data.token);
+    if (!data.token) {
+      throw new Error('No token received from server');
+    }
+    setToken(data.token);
+    setUser(data.user || data);
+    localStorage.setItem('token', data.token);
   };
 
   const register = async (email: string, password: string, name: string) => {
@@ -62,7 +72,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error(err.message || 'Registration failed');
     }
     const data = await response.json();
-    setToken(data.token); setUser(data.user); localStorage.setItem('token', data.token);
+    if (!data.token) {
+      throw new Error('No token received from server');
+    }
+    setToken(data.token);
+    setUser(data.user || data);
+    localStorage.setItem('token', data.token);
   };
 
   const logout = () => { setUser(null); setToken(null); localStorage.removeItem('token'); };
