@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Wifi, WifiOff } from 'lucide-react';
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:5000';
+const WS_URL = 'wss://backend.brokerai.ai:8088';
 
 export function ConnectionStatus() {
   const [isConnected, setIsConnected] = useState(false);

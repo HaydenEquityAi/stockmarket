@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = 'https://backend.brokerai.ai:8088/api';
 
 interface User { id: string; email: string; name: string }
 interface AuthContextType {

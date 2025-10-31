@@ -1,6 +1,6 @@
 // API service layer for BrokerAI backend
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE = 'https://backend.brokerai.ai:8088/api';
 
 interface ApiResponse<T> {
   data?: T;

@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Plus, X } from 'lucide-react';
 import { LiveStockCard } from '../components/LiveStockCard';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = 'https://backend.brokerai.ai:8088/api';
 
 interface WatchlistItem {
   symbol: string;
