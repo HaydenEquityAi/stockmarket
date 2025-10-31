@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Plus, TrendingUp, TrendingDown, DollarSign, Briefcase, X } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
