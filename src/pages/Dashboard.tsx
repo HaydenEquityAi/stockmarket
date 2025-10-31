@@ -35,11 +35,11 @@ export function Dashboard() {
   const totalGainPercent = (totalGain / (totalValue - totalGain)) * 100;
 
   return (
-    <div className="p-8 space-y-6 bg-[#f8fafc] min-h-screen">
-      <div className="flex items-center justify-between">
+    <div className="p-4 lg:p-8 space-y-4 lg:space-y-6 bg-[#f8fafc] min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-black mb-2">Dashboard</h1>
-          <p className="text-[#1e293b]">Welcome back, here's what's happening in the markets</p>
+          <h1 className="text-xl lg:text-3xl font-bold text-black mb-1">Dashboard</h1>
+          <p className="text-sm lg:text-base text-[#1e293b]">Welcome back, here's what's happening in the markets</p>
         </div>
       </div>
 

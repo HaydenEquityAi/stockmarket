@@ -39,12 +39,12 @@ function Shell() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="flex">
         <AppSidebar activePage={currentPage} onNavigate={setCurrentPage} />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col w-full min-w-0">
           <TopBar />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto">
             {renderPage()}
           </main>
         </div>

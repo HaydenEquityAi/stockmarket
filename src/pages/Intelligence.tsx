@@ -40,7 +40,7 @@ export function Intelligence() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8 space-y-4 lg:space-y-6">
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export function Intelligence() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
         <div className="bg-white rounded-xl p-4 shadow-sm">
           <h3 className="text-sm font-semibold text-gray-700 mb-3">Filter by Sentiment</h3>
           <div className="flex flex-wrap gap-2">

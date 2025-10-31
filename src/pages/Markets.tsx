@@ -51,7 +51,7 @@ export function Markets() {
   ];
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 lg:p-8 space-y-4 lg:space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-slate-50 mb-2">Markets</h1>

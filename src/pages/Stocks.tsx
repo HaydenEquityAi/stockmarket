@@ -68,7 +68,7 @@ export function Stocks() {
   const isPositive = (selectedData?.change ?? 0) >= 0;
 
   return (
-    <div className="p-8 space-y-6 bg-[#f8fafc] min-h-screen">
+    <div className="p-4 lg:p-8 space-y-4 lg:space-y-6 bg-[#f8fafc] min-h-screen">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-black mb-2">Stocks</h1>
