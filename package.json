@@ -55,12 +55,11 @@
       },
       "scripts": {
             "dev": "vite",
-             "build": "npx vite build",
+             "build": "vite build",
             "preview": "vite preview"
       }
   ,
   "engines": {
-    "node": "22.x",
-    "npm": ">=10.0.0"
+    "node": "20.x"
   }
 }
