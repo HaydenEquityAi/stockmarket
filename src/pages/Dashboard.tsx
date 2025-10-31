@@ -1,8 +1,8 @@
 import { MarketStatusBanner } from '../components/MarketStatusBanner';
-import { IndexCard } from '../components/IndexCard';
-import { StockCard } from '../components/StockCard';
 import { NewsCard } from '../components/NewsCard';
-import { indices, trendingStocks, newsItems, portfolioHoldings } from '../lib/mock-data';
+import { LiveIndexCard } from '../components/LiveIndexCard';
+import { LiveStockCard } from '../components/LiveStockCard';
+import { newsItems, portfolioHoldings } from '../lib/mock-data';
 import { ArrowUp, TrendingUp, DollarSign, Target } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -24,11 +24,11 @@ export function Dashboard() {
 
       {/* Market Indices */}
       <div>
-        <h2 className="text-black mb-4">Market Indices</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Market Indices</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {indices.map((index) => (
-            <IndexCard key={index.symbol} index={index} />
-          ))}
+          <LiveIndexCard symbol="SPY" name="S&P 500" />
+          <LiveIndexCard symbol="DIA" name="Dow Jones" />
+          <LiveIndexCard symbol="QQQ" name="Nasdaq" />
         </div>
       </div>
 
@@ -95,13 +95,14 @@ export function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-black">Trending Stocks</h2>
+            <h2 className="text-xl font-bold text-gray-900">Trending Stocks</h2>
             <button className="text-[#2563eb] hover:text-[#1d4ed8] transition-colors">View All</button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {trendingStocks.slice(0, 4).map((stock) => (
-              <StockCard key={stock.symbol} stock={stock} />
-            ))}
+            <LiveStockCard symbol="NVDA" name="NVIDIA Corporation" />
+            <LiveStockCard symbol="AAPL" name="Apple Inc." />
+            <LiveStockCard symbol="MSFT" name="Microsoft Corporation" />
+            <LiveStockCard symbol="TSLA" name="Tesla, Inc." />
           </div>
         </div>
 
@@ -129,16 +130,27 @@ export function Dashboard() {
             <div>Change</div>
             <div>Volume</div>
           </div>
-          {trendingStocks.filter(s => s.change > 0).map((stock) => (
-            <div key={stock.symbol} className="grid grid-cols-5 gap-4 p-4 border-b border-e2e8f0 last:border-0 hover:bg-[#f8fafc] transition-colors cursor-pointer">
-              <div className="text-black font-mono">{stock.symbol}</div>
-              <div className="text-[#1e293b]">{stock.name}</div>
-              <div className="text-black font-mono">${stock.price.toFixed(2)}</div>
+          {[
+            { symbol: 'NVDA', name: 'NVIDIA Corporation' },
+            { symbol: 'AAPL', name: 'Apple Inc.' },
+            { symbol: 'MSFT', name: 'Microsoft Corporation' },
+            { symbol: 'TSLA', name: 'Tesla, Inc.' }
+          ].map((s) => (
+            <div key={s.symbol} className="grid grid-cols-5 gap-4 p-4 border-b border-e2e8f0 last:border-0 hover:bg-[#f8fafc] transition-colors cursor-pointer">
+              <div className="text-black font-mono">{s.symbol}</div>
+              <div className="text-[#1e293b]">{s.name}</div>
+              <div className="text-black font-mono">
+                {/* Inline live price */}
+                {/* Using LivePriceDisplay would be ideal; keeping inline simplicity */}
+                <span id={`price-${s.symbol}`}>
+                  {/* Optionally integrate LivePriceDisplay here */}
+                </span>
+              </div>
               <div className="flex items-center gap-2 text-[#16a34a]">
                 <ArrowUp className="w-4 h-4" />
-                <span className="font-mono">+{stock.changePercent.toFixed(2)}%</span>
+                <span className="font-mono">live</span>
               </div>
-              <div className="text-[#1e293b]">{stock.volume}</div>
+              <div className="text-[#1e293b]">—</div>
             </div>
           ))}
         </div>

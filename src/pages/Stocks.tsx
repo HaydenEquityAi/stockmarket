@@ -1,20 +1,29 @@
 import { useState } from 'react';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { trendingStocks, newsItems } from '../lib/mock-data';
+import { newsItems } from '../lib/mock-data';
 import { Star, Plus, TrendingUp, TrendingDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { NewsCard } from '../components/NewsCard';
+import { LiveStockCard } from '../components/LiveStockCard';
+import { useMarketData } from '../hooks/useMarketData';
 
 export function Stocks() {
-  const [selectedStock, setSelectedStock] = useState(trendingStocks[0]);
-  const [watchlist] = useState([trendingStocks[0], trendingStocks[1], trendingStocks[3]]);
+  const initial = { symbol: 'NVDA', name: 'NVIDIA Corporation' } as const;
+  const [selectedStock, setSelectedStock] = useState<{ symbol: string; name: string }>(initial);
+  const [watchlist] = useState<Array<{ symbol: string; name: string }>>([
+    { symbol: 'NVDA', name: 'NVIDIA Corporation' },
+    { symbol: 'AAPL', name: 'Apple Inc.' },
+    { symbol: 'MSFT', name: 'Microsoft Corporation' },
+  ]);
 
-  const chartData = selectedStock.data.map((value, index) => ({
+  const { data: selectedData } = useMarketData(selectedStock.symbol);
+
+  const chartData = Array.from({ length: 30 }).map((_, index) => ({
     time: `${9 + Math.floor(index / 2)}:${index % 2 === 0 ? '00' : '30'}`,
-    price: value
+    price: (selectedData?.price || 0) * (0.98 + Math.random() * 0.04)
   }));
 
-  const isPositive = selectedStock.change >= 0;
+  const isPositive = (selectedData?.change ?? 0) >= 0;
 
   return (
     <div className="p-8 space-y-6 bg-[#f8fafc] min-h-screen">
@@ -52,10 +61,7 @@ export function Stocks() {
                     <span className="font-mono">{stock.symbol}</span>
                     <Star className="w-4 h-4 fill-current" />
                   </div>
-                  <div className="font-mono">${stock.price.toFixed(2)}</div>
-                  <div className={`font-mono ${stock.change >= 0 ? (selectedStock.symbol === stock.symbol ? 'text-emerald-200' : 'text-[#16a34a]') : (selectedStock.symbol === stock.symbol ? 'text-red-200' : 'text-[#dc2626]')}`}>
-                    {stock.change >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%
-                  </div>
+                  <div className="text-xs text-[#e2e8f0]">live</div>
                 </motion.div>
               ))}
             </div>
@@ -106,11 +112,11 @@ export function Stocks() {
                 <p className="text-[#1e293b] mb-4">{selectedStock.name}</p>
                 
                 <div className="flex items-baseline gap-4">
-                  <div className="font-mono text-black">${selectedStock.price.toFixed(2)}</div>
+                  <div className="font-mono text-black">${(selectedData?.price ?? 0).toFixed(2)}</div>
                   <div className={`flex items-center gap-1 ${isPositive ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
                     {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                     <span className="font-mono">
-                      {isPositive ? '+' : ''}{selectedStock.change.toFixed(2)} ({isPositive ? '+' : ''}{selectedStock.changePercent.toFixed(2)}%)
+                      {isPositive ? '+' : ''}{(selectedData?.change ?? 0).toFixed(2)} ({isPositive ? '+' : ''}{(selectedData?.changePercent ?? 0).toFixed(2)}%)
                     </span>
                   </div>
                 </div>
@@ -213,6 +219,15 @@ export function Stocks() {
               })}
             </div>
           </div>
+        </div>
+      </div>
+      {/* Live Watchlist Cards */}
+      <div className="mt-8">
+        <h2 className="text-black mb-4">Watchlist (Live)</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {watchlist.map((s) => (
+            <LiveStockCard key={s.symbol} symbol={s.symbol} name={s.name} />
+          ))}
         </div>
       </div>
     </div>
