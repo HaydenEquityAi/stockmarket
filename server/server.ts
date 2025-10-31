@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
 import { connectDB } from './db/connection.js';
 import apiRoutes from './routes/api.js';
+import { marketDataProvider } from './services/marketDataProvider.js';
+import { Stock } from './models/index.js';
 
 dotenv.config({ path: './server/.env' });
 
@@ -32,60 +34,97 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date() });
 });
 
-// WebSocket
+// Real-time WS subscriptions
+type ClientWithMeta = WebSocket & { symbol?: string };
+const subscriptions = new Map<ClientWithMeta, string>();
+
 wss.on('connection', (ws) => {
+  const client = ws as ClientWithMeta;
   console.log('🔌 New WebSocket client connected');
-  
+
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message.toString());
-      
-      if (data.type === 'subscribe') {
-        console.log(`📊 Client subscribed to ${data.symbol}`);
-        (ws as any).symbol = data.symbol;
+
+      if (data.type === 'subscribe' && data.symbol) {
+        client.symbol = data.symbol.toUpperCase();
+        subscriptions.set(client, client.symbol);
+        console.log(`📊 Client subscribed to ${client.symbol}`);
+        ws.send(JSON.stringify({ type: 'subscribed', symbol: client.symbol, message: `Subscribed to ${client.symbol}` }));
       }
-      
+
       if (data.type === 'unsubscribe') {
-        console.log(`❌ Client unsubscribed from ${data.symbol}`);
-        (ws as any).symbol = null;
+        console.log(`❌ Client unsubscribed from ${client.symbol}`);
+        subscriptions.delete(client);
+        client.symbol = undefined;
       }
     } catch (error) {
       console.error('WebSocket message error:', error);
     }
   });
-  
+
   ws.on('close', () => {
+    subscriptions.delete(client);
     console.log('🔌 Client disconnected');
   });
-  
+
   const heartbeat = setInterval(() => {
     if (ws.readyState === ws.OPEN) {
-      ws.send(JSON.stringify({ type: 'heartbeat', timestamp: new Date() }));
+      ws.send(JSON.stringify({ type: 'heartbeat', timestamp: new Date(), subscribedTo: client.symbol }));
     } else {
       clearInterval(heartbeat);
     }
   }, 30000);
 });
 
-// Simulate price updates
-setInterval(() => {
-  const symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META'];
-  
-  symbols.forEach(symbol => {
-    const priceChange = (Math.random() - 0.5) * 2;
-    
-    wss.clients.forEach(client => {
-      if (client.readyState === client.OPEN && (client as any).symbol === symbol) {
-        client.send(JSON.stringify({
-          type: 'price_update',
-          symbol,
-          priceChange,
-          timestamp: new Date()
-        }));
+// Poll market data and broadcast
+setInterval(async () => {
+  try {
+    const symbols = Array.from(new Set(Array.from(subscriptions.values()).filter(Boolean)));
+    if (!symbols.length) return;
+
+    console.log(`Polling market data for ${symbols.length} symbols...`);
+    const quotes = await marketDataProvider.fetchQuotes(symbols);
+    if (!quotes.length) {
+      console.log('No quotes received');
+      return;
+    }
+
+    console.log(`Received ${quotes.length} quotes`);
+    for (const quote of quotes) {
+      try {
+        await Stock.updateOne(
+          { symbol: quote.symbol },
+          { $set: { price: quote.price, change: quote.change, changePercent: quote.changePercent, volume: quote.volume, lastUpdated: new Date() } },
+          { upsert: true }
+        );
+      } catch (dbError) {
+        console.error(`Database update error for ${quote.symbol}:`, dbError);
       }
-    });
-  });
-}, 5000);
+
+      wss.clients.forEach((client) => {
+        const c = client as ClientWithMeta;
+        if (client.readyState === client.OPEN && c.symbol === quote.symbol) {
+          client.send(JSON.stringify({
+            type: 'price_update',
+            symbol: quote.symbol,
+            price: quote.price,
+            change: quote.change,
+            changePercent: quote.changePercent,
+            volume: quote.volume,
+            timestamp: quote.timestamp
+          }));
+        }
+      });
+    }
+  } catch (err) {
+    console.error('Polling error:', err);
+  }
+}, marketDataProvider.pollMs);
+
+console.log(`📊 Market data polling started (${marketDataProvider.pollMs}ms interval)`);
+const defaultSymbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META'];
+console.log(`📈 Tracking ${defaultSymbols.length} default symbols`);
 
 // Start server
 const PORT = process.env.PORT || 5000;

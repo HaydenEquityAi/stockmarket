@@ -39,6 +39,7 @@ import {
   getTechnicalIndicators
 } from '../controllers/analysisController.js';
 import { Index, Stock, News, Portfolio } from '../models/index.js';
+import { marketDataProvider } from '../services/marketDataProvider.js';
 
 const router = express.Router();
 
@@ -105,4 +106,33 @@ router.get('/analysis/signals', getAISignals);
 router.get('/analysis/technical/:symbol', getTechnicalIndicators);
 
 export default router;
+
+// Prices
+router.get('/prices/quote/:symbol', async (req, res) => {
+  try {
+    const { symbol } = req.params;
+    const quotes = await marketDataProvider.fetchQuotes([symbol.toUpperCase()]);
+    if (!quotes || quotes.length === 0) {
+      return res.status(404).json({ error: 'Quote not found' });
+    }
+    res.json(quotes[0]);
+  } catch (error) {
+    console.error('Quote fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch quote' });
+  }
+});
+
+router.post('/prices/quotes', async (req, res) => {
+  try {
+    const { symbols } = req.body || {};
+    if (!Array.isArray(symbols) || symbols.length === 0) {
+      return res.status(400).json({ error: 'Invalid symbols array' });
+    }
+    const quotes = await marketDataProvider.fetchQuotes(symbols);
+    res.json(quotes);
+  } catch (error) {
+    console.error('Batch quotes error:', error);
+    res.status(500).json({ error: 'Failed to fetch quotes' });
+  }
+});
 
