@@ -69,8 +69,73 @@ export function Portfolio() {
         <div className="text-center py-12 bg-white rounded-xl shadow-sm"><Briefcase className="mx-auto text-gray-400 mb-4" size={48} /><h3 className="text-lg font-semibold text-gray-900 mb-2">No positions yet</h3><p className="text-gray-600 mb-4">Add your first stock position to start tracking</p><button onClick={() => setShowAddModal(true)} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Your First Position</button></div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl p-6 shadow-sm"><h2 className="text-lg font-bold mb-4">Portfolio Allocation</h2><div className="h-64"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={pieData} cx="50%" cy="50%" labelLine={false} label={({ name, percentage }) => `${name} ${percentage}%`} outerRadius={80} fill="#8884d8" dataKey="value">{pieData.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />))}</Pie><Tooltip formatter={(value: any) => `$${Number(value).toLocaleString()}`} /><Legend /></PieChart></ResponsiveContainer></div></div>
-          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm overflow-x-auto"><h2 className="text-lg font-bold mb-4">Holdings</h2><table className="min-w-full"><thead><tr className="text-left text-sm text-gray-600 border-b"><th className="pb-3">Symbol</th><th className="pb-3 text-right">Quantity</th><th className="pb-3 text-right">Avg Price</th><th className="pb-3 text-right">Current</th><th className="pb-3 text-right">Value</th><th className="pb-3 text-right">Gain/Loss</th><th className="pb-3"></th></tr></thead><tbody>{positions.map((pos) => (<tr key={pos._id} className="border-b hover:bg-gray-50"><td className="py-3 font-bold">{pos.symbol}</td><td className="py-3 text-right">{pos.quantity}</td><td className="py-3 text-right">${pos.avgPrice.toFixed(2)}</td><td className="py-3 text-right">${pos.currentPrice.toFixed(2)}</td><td className="py-3 text-right font-medium">${pos.currentValue.toFixed(2)}</td><td className={`py-3 text-right font-medium ${pos.totalGain >= 0 ? 'text-green-600' : 'text-red-600'}`}>{pos.totalGain >= 0 ? '+' : ''}${pos.totalGain.toFixed(2)}<br /><span className="text-xs">({pos.totalGain >= 0 ? '+' : ''}{pos.totalGainPercent.toFixed(2)}%)</span></td><td className="py-3"><button onClick={() => removePosition(pos.symbol)} className="p-1 hover:bg-red-50 rounded text-red-600"><X size={16} /></button></td></tr>))}</tbody></table></div>
+          {/* Pie Chart */}
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <h2 className="text-lg font-bold mb-4">Portfolio Allocation</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percentage }) => `${name} ${percentage}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: any) => `$${Number(value).toLocaleString()}`} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Positions List */}
+          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm overflow-x-auto">
+            <h2 className="text-lg font-bold mb-4">Holdings</h2>
+            <table className="min-w-full">
+              <thead>
+                <tr className="text-left text-sm text-gray-600 border-b">
+                  <th className="pb-3 pr-4">Symbol</th>
+                  <th className="pb-3 pr-4 text-right">Qty</th>
+                  <th className="pb-3 pr-4 text-right">Avg Price</th>
+                  <th className="pb-3 pr-4 text-right">Current</th>
+                  <th className="pb-3 pr-4 text-right">Value</th>
+                  <th className="pb-3 pr-4 text-right">Gain/Loss</th>
+                  <th className="pb-3 w-10"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {positions.map(pos => (
+                  <tr key={pos._id} className="border-b hover:bg-gray-50">
+                    <td className="py-4 pr-4 font-bold text-blue-600">{pos.symbol}</td>
+                    <td className="py-4 pr-4 text-right">{pos.quantity}</td>
+                    <td className="py-4 pr-4 text-right text-gray-600">${pos.avgPrice.toFixed(2)}</td>
+                    <td className="py-4 pr-4 text-right font-medium">${pos.currentPrice.toFixed(2)}</td>
+                    <td className="py-4 pr-4 text-right font-semibold">${pos.currentValue.toFixed(2)}</td>
+                    <td className={`py-4 pr-4 text-right font-medium ${pos.totalGain >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      <div>{pos.totalGain >= 0 ? '+' : ''}${pos.totalGain.toFixed(2)}</div>
+                      <div className="text-xs">
+                        ({pos.totalGain >= 0 ? '+' : ''}{pos.totalGainPercent.toFixed(2)}%)
+                      </div>
+                    </td>
+                    <td className="py-4">
+                      <button
+                        onClick={() => removePosition(pos.symbol)}
+                        className="p-2 hover:bg-red-50 rounded text-red-600"
+                        title="Remove position"
+                      >
+                        <X size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
