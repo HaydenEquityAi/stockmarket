@@ -9,6 +9,10 @@ import Register from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Stocks } from './pages/Stocks';
 import { Portfolio } from './pages/Portfolio';
+import { SmartMoney } from './pages/SmartMoney';
+import { Markets } from './pages/Markets';
+import { Analysis } from './pages/Analysis';
+import { Intelligence } from './pages/Intelligence';
 
 function Shell() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -21,6 +25,14 @@ function Shell() {
         return <Stocks />;
       case 'portfolio':
         return <Portfolio />;
+      case 'smart-money':
+        return <SmartMoney />;
+      case 'markets':
+        return <Markets />;
+      case 'analysis':
+        return <Analysis />;
+      case 'intelligence':
+        return <Intelligence />;
       default:
         return <Dashboard />;
     }
