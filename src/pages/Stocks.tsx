@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Plus, TrendingUp, Search, X } from 'lucide-react';
 
 const API_URL = 'https://backend.brokerai.ai:8088/api';
