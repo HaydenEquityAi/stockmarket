@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMarketData } from '../hooks/useMarketData';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 

@@ -1,54 +1,61 @@
 import { Request, Response } from 'express';
-import { Watchlist, Stock } from '../models/index.js';
+import Watchlist from '../models/Watchlist.js';
+import { Stock } from '../models/index.js';
 
 export const getWatchlist = async (req: Request, res: Response) => {
   try {
-    const userId = (req.query.userId as string) || 'default-user';
-    let watchlist = await Watchlist.findOne({ userId });
-    
-    if (!watchlist) {
-      watchlist = new Watchlist({ userId, stocks: [] });
-      await watchlist.save();
-    }
-    const stocks = await Stock.find({ symbol: { $in: watchlist.stocks } });
-    
-    res.json({ watchlist: watchlist.stocks, stocks });
+    const userId = (req as any).userId;
+    const watchlist = await Watchlist.find({ userId }).sort({ addedAt: -1 });
+    const symbols = watchlist.map(item => item.symbol);
+    const stocks = await Stock.find({ symbol: { $in: symbols } });
+    const watchlistWithPrices = watchlist.map(item => {
+      const stock = stocks.find(s => s.symbol === item.symbol);
+      return {
+        symbol: item.symbol,
+        addedAt: item.addedAt,
+        currentPrice: stock?.price || 0,
+        change: stock?.change || 0,
+        changePercent: stock?.changePercent || 0
+      };
+    });
+    res.json({ watchlist: watchlistWithPrices });
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    console.error('Get watchlist error:', error);
+    res.status(500).json({ message: 'Error fetching watchlist', error });
   }
 };
 
 export const addToWatchlist = async (req: Request, res: Response) => {
   try {
-    const { userId = 'default-user', symbol } = req.body;
-    
-    let watchlist = await Watchlist.findOne({ userId });
-    if (!watchlist) {
-      watchlist = new Watchlist({ userId, stocks: [] });
+    const userId = (req as any).userId;
+    const { symbol } = req.body;
+    if (!symbol) {
+      return res.status(400).json({ message: 'Symbol is required' });
     }
-    if (!watchlist.stocks.includes(symbol.toUpperCase())) {
-      watchlist.stocks.push(symbol.toUpperCase());
-      await watchlist.save();
+    const existing = await Watchlist.findOne({ userId, symbol: symbol.toUpperCase() });
+    if (existing) {
+      return res.status(400).json({ message: 'Stock already in watchlist' });
     }
-    res.json(watchlist);
+    const watchlistItem = await Watchlist.create({ userId, symbol: symbol.toUpperCase() });
+    res.status(201).json({ success: true, message: `${symbol.toUpperCase()} added to watchlist`, item: watchlistItem });
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    console.error('Add to watchlist error:', error);
+    res.status(500).json({ message: 'Error adding to watchlist', error });
   }
 };
 
 export const removeFromWatchlist = async (req: Request, res: Response) => {
   try {
+    const userId = (req as any).userId;
     const { symbol } = req.params;
-    const userId = (req.query.userId as string) || 'default-user';
-    const watchlist = await Watchlist.findOne({ userId });
-    if (!watchlist) {
-      return res.status(404).json({ error: 'Watchlist not found' });
+    const result = await Watchlist.deleteOne({ userId, symbol: symbol.toUpperCase() });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Stock not found in watchlist' });
     }
-    watchlist.stocks = watchlist.stocks.filter(s => s !== symbol.toUpperCase());
-    await watchlist.save();
-    res.json(watchlist);
+    res.json({ success: true, message: `${symbol.toUpperCase()} removed from watchlist` });
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    console.error('Remove from watchlist error:', error);
+    res.status(500).json({ message: 'Error removing from watchlist', error });
   }
 };
 

@@ -1,230 +1,117 @@
-import { portfolioHoldings, portfolioHistory, sectorData } from '../lib/mock-data';
-import { TrendingUp, DollarSign, Target, PieChart as PieChartIcon } from 'lucide-react';
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
-import { motion } from 'motion/react';
-import { MiniChart } from '../components/MiniChart';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { Plus, X } from 'lucide-react';
+import { LiveStockCard } from '../components/LiveStockCard';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+interface WatchlistItem {
+  symbol: string;
+  addedAt: string;
+  currentPrice: number;
+  change: number;
+  changePercent: number;
+}
 
 export function Portfolio() {
-  const totalValue = portfolioHoldings.reduce((sum, holding) => sum + holding.totalValue, 0);
-  const totalGain = portfolioHoldings.reduce((sum, holding) => sum + holding.gain, 0);
-  const totalGainPercent = (totalGain / (totalValue - totalGain)) * 100;
-  const todayGain = 2456.78;
-  const todayGainPercent = (todayGain / totalValue) * 100;
+  const { token } = useAuth();
+  const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newSymbol, setNewSymbol] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const COLORS = ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#8b5cf6', '#ec4899', '#06b6d4'];
+  useEffect(() => { fetchWatchlist(); }, []);
 
-  const allocationData = portfolioHoldings.map((holding, index) => ({
-    name: holding.symbol,
-    value: holding.totalValue,
-    color: COLORS[index % COLORS.length]
-  }));
+  const fetchWatchlist = async () => {
+    try {
+      const response = await fetch(`${API_URL}/watchlist`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await response.json();
+      setWatchlist(data.watchlist);
+    } catch (error) {
+      console.error('Error fetching watchlist:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddStock = async (e: React.FormEvent) => {
+    e.preventDefault(); setError(''); setSuccess('');
+    try {
+      const response = await fetch(`${API_URL}/watchlist`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ symbol: newSymbol.toUpperCase() })
+      });
+      if (!response.ok) { const err = await response.json(); throw new Error(err.message); }
+      setSuccess(`${newSymbol.toUpperCase()} added to watchlist`);
+      setNewSymbol(''); setShowAddModal(false); fetchWatchlist();
+    } catch (error: any) { setError(error.message || 'Failed to add stock'); }
+  };
+
+  const handleRemoveStock = async (symbol: string) => {
+    try {
+      const response = await fetch(`${API_URL}/watchlist/${symbol}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      if (response.ok) { setSuccess(`${symbol} removed from watchlist`); fetchWatchlist(); }
+    } catch (error) { setError('Failed to remove stock'); }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8 space-y-6 bg-[#f8fafc] min-h-screen">
+    <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-black mb-2">Portfolio</h1>
-          <p className="text-[#1e293b]">Track your investments and performance</p>
+          <h1 className="text-3xl font-bold text-gray-900">My Watchlist</h1>
+          <p className="text-gray-600">Track your favorite stocks</p>
         </div>
-        <button className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white py-2 px-6 rounded-lg transition-colors">
-          Add Position
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <Plus size={20} />
+          Add Stock
         </button>
       </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div
-          className="bg-white rounded-xl p-6 border border-e2e8f0 shadow-md"
-          whileHover={{ y: -4 }}
-        >
-          <div className="flex items-center gap-2 text-[#1e293b] mb-3">
-            <DollarSign className="w-5 h-5" />
-            <span>Total Value</span>
-          </div>
-          <div className="font-mono text-black mb-2">${totalValue.toLocaleString()}</div>
-          <div className="text-[#1e293b]">As of {new Date().toLocaleDateString()}</div>
-        </motion.div>
-
-        <motion.div
-          className="bg-white rounded-xl p-6 border border-e2e8f0 shadow-md"
-          whileHover={{ y: -4 }}
-        >
-          <div className="flex items-center gap-2 text-[#1e293b] mb-3">
-            <TrendingUp className="w-5 h-5" />
-            <span>Today's P&L</span>
-          </div>
-          <div className="font-mono text-[#16a34a] mb-2">
-            +${todayGain.toLocaleString()}
-          </div>
-          <div className="text-[#16a34a]">+{todayGainPercent.toFixed(2)}%</div>
-        </motion.div>
-
-        <motion.div
-          className="bg-white rounded-xl p-6 border border-e2e8f0 shadow-md"
-          whileHover={{ y: -4 }}
-        >
-          <div className="flex items-center gap-2 text-[#1e293b] mb-3">
-            <Target className="w-5 h-5" />
-            <span>All-Time P&L</span>
-          </div>
-          <div className="font-mono text-[#16a34a] mb-2">
-            +${totalGain.toLocaleString()}
-          </div>
-          <div className="text-[#16a34a]">+{totalGainPercent.toFixed(2)}%</div>
-        </motion.div>
-      </div>
-
-      {/* Performance Chart */}
-      <div className="bg-white rounded-xl border border-e2e8f0 p-6 shadow-sm">
-        <h2 className="text-black mb-4">Portfolio Performance</h2>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={portfolioHistory}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="date" stroke="#1e293b" />
-              <YAxis stroke="#1e293b" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  color: '#000000'
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#16a34a"
-                strokeWidth={3}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      {error && <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">{error}</div>}
+      {success && <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-600">{success}</div>}
+      {watchlist.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg mb-4">Your watchlist is empty</p>
+          <button onClick={() => setShowAddModal(true)} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Your First Stock</button>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {watchlist.map((item) => (
+            <div key={item.symbol} className="relative">
+              <button onClick={() => handleRemoveStock(item.symbol)} className="absolute top-2 right-2 z-10 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                <X size={16} />
+              </button>
+              <LiveStockCard symbol={item.symbol} name={item.symbol} />
+            </div>
+          ))}
+        </div>
+      )}
 
-      {/* Holdings & Allocation */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <h2 className="text-black mb-4">Holdings</h2>
-          <div className="space-y-4">
-            {portfolioHoldings.map((holding) => (
-              <motion.div
-                key={holding.symbol}
-                className="bg-white rounded-xl border border-e2e8f0 p-6 hover:border-[#2563eb]/20 transition-all shadow-sm"
-                whileHover={{ y: -2 }}
-              >
-                <div className="grid grid-cols-12 gap-4 items-center">
-                  <div className="col-span-3">
-                    <div className="text-black mb-1">{holding.symbol}</div>
-                    <div className="text-[#1e293b]">{holding.name}</div>
-                  </div>
-                  
-                  <div className="col-span-2">
-                    <div className="text-[#1e293b] mb-1">Shares</div>
-                    <div className="text-black">{holding.shares}</div>
-                  </div>
-                  
-                  <div className="col-span-2">
-                    <div className="text-[#1e293b] mb-1">Avg Cost</div>
-                    <div className="text-black font-mono">${holding.avgCost.toFixed(2)}</div>
-                  </div>
-                  
-                  <div className="col-span-2">
-                    <div className="text-[#1e293b] mb-1">Current Price</div>
-                    <div className="text-black font-mono">${holding.currentPrice.toFixed(2)}</div>
-                  </div>
-                  
-                  <div className="col-span-3">
-                    <div className="text-[#1e293b] mb-1">Total Value</div>
-                    <div className="text-black font-mono mb-2">${holding.totalValue.toLocaleString()}</div>
-                    <div className={`font-mono ${holding.gain >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
-                      {holding.gain >= 0 ? '+' : ''}${holding.gain.toFixed(2)} ({holding.gainPercent >= 0 ? '+' : ''}{holding.gainPercent.toFixed(2)}%)
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-4">
-                  <MiniChart data={holding.data} height={50} />
-                </div>
-              </motion.div>
-            ))}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Add Stock to Watchlist</h2>
+            <form onSubmit={handleAddStock} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Stock Symbol</label>
+                <input type="text" value={newSymbol} onChange={(e) => setNewSymbol(e.target.value.toUpperCase())} placeholder="AAPL, MSFT, GOOGL..." className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => { setShowAddModal(false); setNewSymbol(''); setError(''); }} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button>
+                <button type="submit" className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add</button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <div>
-          <h2 className="text-black mb-4">Allocation</h2>
-          <div className="bg-white rounded-xl border border-e2e8f0 p-6 shadow-sm">
-            <div className="flex items-center justify-center mb-6">
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={allocationData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {allocationData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px'
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            
-            <div className="space-y-2">
-              {allocationData.map((item) => (
-                <div key={item.name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="text-[#1e293b]">{item.name}</span>
-                  </div>
-                  <span className="text-[#1e293b]">
-                    {((item.value / totalValue) * 100).toFixed(1)}%
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6 bg-white rounded-xl border border-e2e8f0 p-6 shadow-sm">
-            <h3 className="text-black mb-4">Recent Transactions</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center pb-3 border-b border-e2e8f0">
-                <div>
-                  <div className="text-black">NVDA</div>
-                  <div className="text-[#1e293b]">Buy 50 shares</div>
-                </div>
-                <div className="text-[#16a34a]">+$43,764</div>
-              </div>
-              <div className="flex justify-between items-center pb-3 border-b border-e2e8f0">
-                <div>
-                  <div className="text-black">AAPL</div>
-                  <div className="text-[#1e293b]">Buy 150 shares</div>
-                </div>
-                <div className="text-[#16a34a]">+$28,493</div>
-              </div>
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="text-black">MSFT</div>
-                  <div className="text-[#1e293b]">Buy 100 shares</div>
-                </div>
-                <div className="text-[#16a34a]">+$37,891</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

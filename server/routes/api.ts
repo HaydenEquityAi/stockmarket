@@ -40,8 +40,15 @@ import {
 } from '../controllers/analysisController.js';
 import { Index, Stock, News, Portfolio } from '../models/index.js';
 import { marketDataProvider } from '../services/marketDataProvider.js';
+import { register, login, getCurrentUser } from '../controllers/authController.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// Auth routes
+router.post('/auth/register', register);
+router.post('/auth/login', login);
+router.get('/auth/me', authenticate, getCurrentUser);
 
 // Dashboard
 router.get('/dashboard/overview', async (req, res) => {
@@ -96,9 +103,9 @@ router.get('/smart-money/trades', getSmartMoneyTrades);
 router.get('/smart-money/leaderboard', getLeaderboard);
 
 // Watchlist
-router.get('/watchlist', getWatchlist);
-router.post('/watchlist/add', addToWatchlist);
-router.delete('/watchlist/:symbol', removeFromWatchlist);
+router.get('/watchlist', authenticate, getWatchlist);
+router.post('/watchlist', authenticate, addToWatchlist);
+router.delete('/watchlist/:symbol', authenticate, removeFromWatchlist);
 
 // Analysis
 router.post('/analysis/screen', screenStocks);

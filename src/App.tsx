@@ -1,49 +1,67 @@
-import { useState } from 'react';
-import { AppSidebar } from './components/AppSidebar';
-import { TopBar } from './components/TopBar';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/Layout';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Stocks } from './pages/Stocks';
 import { Portfolio } from './pages/Portfolio';
-import { Intelligence } from './pages/Intelligence';
-import { SmartMoney } from './pages/SmartMoney';
-import { Markets } from './pages/Markets';
-import { Analysis } from './pages/Analysis';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'stocks':
-        return <Stocks />;
-      case 'portfolio':
-        return <Portfolio />;
-      case 'intelligence':
-        return <Intelligence />;
-      case 'smart-money':
-        return <SmartMoney />;
-      case 'markets':
-        return <Markets />;
-      case 'analysis':
-        return <Analysis />;
-      default:
-        return <Dashboard />;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white">
-      <div className="flex">
-        <AppSidebar activePage={currentPage} onNavigate={setCurrentPage} />
-        <div className="flex-1 flex flex-col">
-          <TopBar />
-          <main className="flex-1 overflow-y-auto">
-            {renderPage()}
-          </main>
-        </div>
-      </div>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Navigate to="/dashboard" replace />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/stocks"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Stocks />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/portfolio"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Portfolio />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
