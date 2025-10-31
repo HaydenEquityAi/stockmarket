@@ -7,7 +7,6 @@ import {
 } from '../controllers/stockController.js';
 import {
   getIndices,
-  getMarketStatus,
   getSectors,
   getGlobalMarkets,
   getCommodities,
@@ -40,7 +39,7 @@ import {
   getTechnicalIndicators
 } from '../controllers/analysisController.js';
 import { Index, Stock, News, Portfolio } from '../models/index.js';
-import { marketDataProvider } from '../services/marketDataProvider.js';
+import { marketDataProvider, fetchQuotes } from '../services/marketDataProvider.js';
 import { register, login, getCurrentUser } from '../controllers/authController.js';
 import { authenticate } from '../middleware/auth.js';
 
@@ -82,12 +81,37 @@ router.get('/stocks/:symbol', getStockBySymbol);
 
 // Market
 router.get('/market/indices', getIndices);
-router.get('/market/status', getMarketStatus);
+// Status including API configuration
+router.get('/market/status', async (req, res) => {
+  const polygonStatus = process.env.POLYGON_API_KEY ? 'configured' : 'missing';
+  const finnhubStatus = process.env.FINNHUB_API_KEY ? 'configured' : 'missing';
+  res.json({
+    apis: { polygon: polygonStatus, finnhub: finnhubStatus },
+    pollInterval: marketDataProvider.pollMs,
+    timestamp: new Date().toISOString()
+  });
+});
 router.get('/market/sectors', getSectors);
 router.get('/market/global', getGlobalMarkets);
 router.get('/market/commodities', getCommodities);
 router.get('/market/crypto', getCrypto);
 router.get('/market/breadth', getMarketBreadth);
+
+// Batch quotes endpoint using polygon/finnhub fallback
+router.get('/market/quotes', async (req, res) => {
+  try {
+    const symbolsParam = (req.query.symbols as string) || '';
+    const symbols = symbolsParam.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+    if (symbols.length === 0) {
+      return res.status(400).json({ error: 'No symbols provided' });
+    }
+    const quotes = await fetchQuotes(symbols);
+    res.json({ quotes, timestamp: new Date().toISOString(), source: quotes.length > 0 ? 'polygon/finnhub' : 'none' });
+  } catch (error) {
+    console.error('Batch quotes error:', error);
+    res.status(500).json({ error: 'Failed to fetch quotes' });
+  }
+});
 
 // Portfolio
 router.get('/portfolio', getPortfolio);

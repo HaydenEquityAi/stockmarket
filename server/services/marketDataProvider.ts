@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const provider = (process.env.MARKET_DATA_PROVIDER || 'polygon').toLowerCase();
-const pollMs = parseInt(process.env.MARKET_DATA_POLL_MS || '15000', 10);
+const pollMs = parseInt(process.env.MARKET_DATA_POLL_MS || '60000', 10);
 
 export type Quote = {
   symbol: string;
@@ -107,5 +107,10 @@ export const marketDataProvider = {
     return [];
   }
 };
+
+// Named export wrapper for routes that want a function import
+export async function fetchQuotes(symbols: string[]): Promise<Quote[]> {
+  return marketDataProvider.fetchQuotes(symbols);
+}
 
 
