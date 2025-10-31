@@ -15,8 +15,16 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 // Middleware
+const allowedOrigins = [
+  'https://www.brokerai.ai',
+  'https://brokerai.ai',
+  'https://stockmarket-one.vercel.app'
+];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: allowedOrigins,
   credentials: true,
   optionsSuccessStatus: 200
 };
