@@ -13,7 +13,17 @@ export const getNews = async (req: Request, res: Response) => {
       .sort({ publishedAt: -1 })
       .limit(parseInt(limit as string));
     
-    res.json(news);
+    // Transform newsId to id for frontend compatibility
+    const transformedNews = news.map(item => {
+      const newsObj = item.toObject();
+      return {
+        ...newsObj,
+        id: newsObj.newsId,
+        newsId: undefined
+      };
+    });
+    
+    res.json(transformedNews);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -26,7 +36,17 @@ export const getNewsByStock = async (req: Request, res: Response) => {
       tickers: symbol.toUpperCase() 
     }).sort({ publishedAt: -1 }).limit(10);
     
-    res.json(news);
+    // Transform newsId to id for frontend compatibility
+    const transformedNews = news.map(item => {
+      const newsObj = item.toObject();
+      return {
+        ...newsObj,
+        id: newsObj.newsId,
+        newsId: undefined
+      };
+    });
+    
+    res.json(transformedNews);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

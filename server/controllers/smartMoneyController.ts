@@ -12,7 +12,17 @@ export const getSmartMoneyTrades = async (req: Request, res: Response) => {
       .sort({ date: -1 })
       .limit(parseInt(limit as string));
     
-    res.json(trades);
+    // Transform tradeId to id for frontend compatibility
+    const transformedTrades = trades.map(item => {
+      const tradeObj = item.toObject();
+      return {
+        ...tradeObj,
+        id: tradeObj.tradeId,
+        tradeId: undefined
+      };
+    });
+    
+    res.json(transformedTrades);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
