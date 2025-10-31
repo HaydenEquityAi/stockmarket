@@ -38,7 +38,7 @@ import {
   getAISignals,
   getTechnicalIndicators
 } from '../controllers/analysisController.js';
-import { Index, Stock, News, Portfolio } from '../models/index.js';
+import { Index, Stock, News, Portfolio, Position } from '../models/index.js';
 import { marketDataProvider, fetchQuotes } from '../services/marketDataProvider.js';
 import { register, login, getCurrentUser } from '../controllers/authController.js';
 import { authenticate } from '../middleware/auth.js';
@@ -118,6 +118,75 @@ router.get('/portfolio', getPortfolio);
 router.post('/portfolio/add', addToPortfolio);
 router.delete('/portfolio/:symbol', removeFromPortfolio);
 router.get('/portfolio/history', getPortfolioHistory);
+
+// Portfolio positions (user-owned holdings with real-time enrichment)
+router.get('/portfolio/positions', authenticate, async (req: any, res) => {
+  try {
+    const userId = req.userId || req.user?.id;
+    const positions = await Position.find({ userId });
+    const symbols = positions.map((p: any) => p.symbol);
+    if (symbols.length === 0) {
+      return res.json({ positions: [], summary: { totalValue: 0, totalCost: 0, totalGain: 0, totalGainPercent: 0, positionCount: 0 } });
+    }
+    const quotes = await marketDataProvider.fetchQuotes(symbols);
+    const map: Record<string, any> = {};
+    quotes.forEach((q) => { map[q.symbol] = q; });
+    const enriched = positions.map((p: any) => {
+      const q = map[p.symbol];
+      const currentPrice = q?.price ?? p.avgPrice;
+      const currentValue = p.quantity * currentPrice;
+      const totalCost = p.quantity * p.avgPrice;
+      const totalGain = currentValue - totalCost;
+      const totalGainPercent = totalCost ? (totalGain / totalCost) * 100 : 0;
+      return { ...p.toObject(), currentPrice, currentValue, totalGain, totalGainPercent };
+    });
+    const totalValue = enriched.reduce((sum: number, p: any) => sum + p.currentValue, 0);
+    const totalCost = positions.reduce((sum: number, p: any) => sum + (p.quantity * p.avgPrice), 0);
+    const totalGain = totalValue - totalCost;
+    const totalGainPercent = totalCost ? (totalGain / totalCost) * 100 : 0;
+    res.json({ positions: enriched, summary: { totalValue, totalCost, totalGain, totalGainPercent, positionCount: positions.length } });
+  } catch (error) {
+    console.error('Portfolio fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch portfolio' });
+  }
+});
+
+router.post('/portfolio/positions', authenticate, async (req: any, res) => {
+  try {
+    const { symbol, quantity, avgPrice } = req.body || {};
+    const userId = req.userId || req.user?.id;
+    if (!symbol || !quantity || !avgPrice) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    const upper = String(symbol).toUpperCase();
+    const existing: any = await Position.findOne({ userId, symbol: upper });
+    if (existing) {
+      const newQuantity = existing.quantity + Number(quantity);
+      const newAvgPrice = ((existing.quantity * existing.avgPrice) + (Number(quantity) * Number(avgPrice))) / newQuantity;
+      existing.quantity = newQuantity;
+      existing.avgPrice = newAvgPrice;
+      await existing.save();
+      return res.json({ position: existing });
+    }
+    const position = await Position.create({ userId, symbol: upper, quantity: Number(quantity), avgPrice: Number(avgPrice) });
+    res.json({ position });
+  } catch (error) {
+    console.error('Add position error:', error);
+    res.status(500).json({ error: 'Failed to add position' });
+  }
+});
+
+router.delete('/portfolio/positions/:symbol', authenticate, async (req: any, res) => {
+  try {
+    const { symbol } = req.params;
+    const userId = req.userId || req.user?.id;
+    await Position.deleteOne({ userId, symbol: String(symbol).toUpperCase() });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete position error:', error);
+    res.status(500).json({ error: 'Failed to delete position' });
+  }
+});
 
 // News (live financial news)
 router.get('/news', async (req, res) => {

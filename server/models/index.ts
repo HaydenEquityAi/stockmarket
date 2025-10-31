@@ -157,6 +157,14 @@ const marketDataSchema = new Schema<IMarketData>({
   lastUpdated: { type: Date, default: Date.now }
 });
 
+// Position Schema (user positions)
+const positionSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  symbol: { type: String, required: true, uppercase: true },
+  quantity: { type: Number, required: true },
+  avgPrice: { type: Number, required: true }
+}, { timestamps: true });
+
 // Watchlist Schema
 interface IWatchlist extends Document {
   userId: string;
@@ -178,6 +186,7 @@ export const News = (mongoose.models.News as Model<INews>) || mongoose.model<INe
 export const SmartMoneyTrade = (mongoose.models.SmartMoneyTrade as Model<ISmartMoneyTrade>) || mongoose.model<ISmartMoneyTrade>('SmartMoneyTrade', smartMoneyTradeSchema);
 export const MarketData = (mongoose.models.MarketData as Model<IMarketData>) || mongoose.model<IMarketData>('MarketData', marketDataSchema);
 export const Watchlist = (mongoose.models.Watchlist as Model<IWatchlist>) || mongoose.model<IWatchlist>('Watchlist', watchlistSchema);
+export const Position = (mongoose.models.Position as Model<any>) || mongoose.model('Position', positionSchema);
 
 // Export interfaces for use in other files
 export type {
