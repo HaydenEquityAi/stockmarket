@@ -4,7 +4,7 @@ import { Stock } from '../models/index.js';
 
 export const getWatchlist = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = (req as any).user.id;
     const watchlist = await Watchlist.find({ userId }).sort({ addedAt: -1 });
     const symbols = watchlist.map(item => item.symbol);
     const stocks = await Stock.find({ symbol: { $in: symbols } });
@@ -27,7 +27,7 @@ export const getWatchlist = async (req: Request, res: Response) => {
 
 export const addToWatchlist = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = (req as any).user.id;
     const { symbol } = req.body;
     if (!symbol) {
       return res.status(400).json({ message: 'Symbol is required' });
@@ -46,7 +46,7 @@ export const addToWatchlist = async (req: Request, res: Response) => {
 
 export const removeFromWatchlist = async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = (req as any).user.id;
     const { symbol } = req.params;
     const result = await Watchlist.deleteOne({ userId, symbol: symbol.toUpperCase() });
     if (result.deletedCount === 0) {

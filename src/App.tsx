@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AppSidebar } from './components/AppSidebar';
 import { TopBar } from './components/TopBar';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import { Landing } from './pages/Landing';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Stocks } from './pages/Stocks';
 import { Portfolio } from './pages/Portfolio';
@@ -53,20 +54,35 @@ function Shell() {
   );
 }
 
+function AppContent() {
+  return (
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* Protected Route - Dashboard */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Shell />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Catch-all: redirect to appropriate page */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          {/* Public */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-
-          {/* Authenticated - original white shell */}
-          <Route path="/" element={<ProtectedRoute><Shell /></ProtectedRoute>} />
-          {/* Redirect all to shell */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <AppContent />
       </BrowserRouter>
     </AuthProvider>
   );
