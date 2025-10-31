@@ -41,81 +41,122 @@ export function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <section className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full mb-6">
-                <Zap size={16} className="text-blue-600" />
-                <span className="text-sm font-medium text-blue-600">Now with AI-powered automation</span>
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full">
+                <Zap size={18} className="text-blue-600" />
+                <span className="text-sm font-semibold text-blue-700">Now with AI-powered automation</span>
               </div>
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                AI-Powered<br />
-                <span className="text-blue-600">Portfolio Management</span>
+              
+              <h1 className="text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight">
+                AI-Powered
+                <br />
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Portfolio Management
+                </span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              
+              <p className="text-2xl text-gray-600 leading-relaxed max-w-xl">
                 Automate your investment tracking workflow with intelligent AI tools. Save time, reduce errors, and scale your portfolio effortlessly.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <button
                   onClick={() => navigate('/register')}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+                  className="group inline-flex items-center justify-center gap-2 px-10 py-5 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 font-bold text-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
                 >
                   Get Started
-                  <ChevronRight size={20} />
+                  <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:border-gray-400 font-semibold text-lg transition-all">
+                <button className="inline-flex items-center justify-center gap-2 px-10 py-5 border-2 border-gray-300 text-gray-700 rounded-2xl hover:border-gray-400 hover:bg-gray-50 font-bold text-xl transition-all">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                  </svg>
                   View Demo
                 </button>
               </div>
-              <p className="text-sm text-gray-500 mt-6">
-                Get started in minutes • No credit card required • Cancel anytime
+              
+              <p className="text-base text-gray-500 flex items-center gap-6">
+                <span className="flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  No credit card required
+                </span>
+                <span className="flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  Setup in 5 minutes
+                </span>
+                <span className="flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  Cancel anytime
+                </span>
               </p>
             </div>
 
             {/* Right - Dashboard Preview */}
-            <div className="relative">
-              <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-200">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="ml-4 text-sm text-gray-600">MarketPulse Dashboard</span>
+            <div className="relative lg:pl-8">
+              {/* Floating decoration */}
+              <div className="absolute -top-8 -right-8 w-72 h-72 bg-blue-200 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+              
+              <div className="relative bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+                {/* Window controls */}
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                  <span className="ml-4 text-sm font-medium text-gray-500">MarketPulse Dashboard</span>
                 </div>
+                
+                {/* Metrics grid */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp size={20} className="text-blue-600" />
-                      <span className="text-sm text-gray-600">Portfolio</span>
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-2xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                        <TrendingUp size={20} className="text-white" />
+                      </div>
                     </div>
-                    <p className="text-2xl font-bold text-gray-900">$45K</p>
+                    <p className="text-sm text-gray-600 mb-1">Portfolio</p>
+                    <p className="text-3xl font-bold text-gray-900">$45K</p>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <DollarSign size={20} className="text-green-600" />
-                      <span className="text-sm text-gray-600">Gain</span>
+                  
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-2xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center">
+                        <DollarSign size={20} className="text-white" />
+                      </div>
                     </div>
-                    <p className="text-2xl font-bold text-green-600">+12%</p>
+                    <p className="text-sm text-gray-600 mb-1">Gain</p>
+                    <p className="text-3xl font-bold text-green-600">+12%</p>
                   </div>
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <BarChart3 size={20} className="text-purple-600" />
-                      <span className="text-sm text-gray-600">Stocks</span>
+                  
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-2xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center">
+                        <BarChart3 size={20} className="text-white" />
+                      </div>
                     </div>
-                    <p className="text-2xl font-bold text-gray-900">8</p>
+                    <p className="text-sm text-gray-600 mb-1">Stocks</p>
+                    <p className="text-3xl font-bold text-gray-900">8</p>
                   </div>
                 </div>
+                
+                {/* Activity feed */}
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-600">📈 Position opened - NVDA</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-600">✅ Alert triggered - AAPL $180</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-600">💰 Dividend received - MSFT</span>
-                  </div>
+                  {[
+                    { emoji: '📈', text: 'Position opened - NVDA', time: 'Just now' },
+                    { emoji: '✅', text: 'Alert triggered - AAPL $180', time: '5m ago' },
+                    { emoji: '💰', text: 'Dividend received - MSFT', time: '1h ago' }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 hover:border-blue-200 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{item.emoji}</span>
+                        <span className="text-sm font-medium text-gray-700">{item.text}</span>
+                      </div>
+                      <span className="text-xs text-gray-500">{item.time}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -124,10 +165,10 @@ export function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
               Everything you need to manage investments
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -135,7 +176,7 @@ export function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {/* Feature Cards */}
             {[
               {
@@ -181,13 +222,13 @@ export function Landing() {
                 badge: '50+ exchanges'
               }
             ].map((feature, i) => (
-              <div key={i} className="bg-white p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow">
-                <div className={`w-14 h-14 ${feature.color} rounded-xl flex items-center justify-center mb-4`}>
+              <div key={i} className="bg-white p-10 rounded-2xl border border-gray-200 hover:shadow-xl transition-all hover:border-blue-200">
+                <div className={`w-16 h-16 ${feature.color} rounded-xl flex items-center justify-center mb-6`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600 mb-4">{feature.description}</p>
-                <span className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">{feature.description}</p>
+                <span className="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
                   {feature.badge}
                 </span>
               </div>
@@ -197,23 +238,23 @@ export function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Simple, transparent pricing</h2>
             <p className="text-xl text-gray-600">
               Choose the plan that fits your portfolio size. All plans include our core features<br />with no hidden fees.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
             {/* Pricing Cards */}
             {[
               { name: 'Starter', price: '0', features: ['Up to 5 stocks', 'Real-time data', 'Basic analytics', 'Email support'], popular: false },
               { name: 'Growth', price: '19', features: ['Up to 25 stocks', 'Priority support', 'Advanced analytics', 'Price alerts', 'API access'], popular: true },
               { name: 'Professional', price: '49', features: ['Unlimited stocks', 'Dedicated support', 'Custom integrations', 'White label', 'Premium insights'], popular: false }
             ].map((plan, i) => (
-              <div key={i} className={`bg-white rounded-2xl p-8 ${plan.popular ? 'ring-2 ring-blue-600 shadow-xl' : 'border border-gray-200'} relative`}>
+              <div key={i} className={`bg-white rounded-2xl p-10 ${plan.popular ? 'ring-2 ring-blue-600 shadow-xl' : 'border border-gray-200'} relative`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
@@ -251,7 +292,7 @@ export function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-600">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to transform your<br />investment tracking?
