@@ -51,10 +51,10 @@ export function Analysis() {
   };
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 lg:p-8 space-y-6 relative">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-50 mb-2">Analysis</h1>
+          <h1 className="text-2xl font-black text-white mb-2">Analysis</h1>
           <p className="text-slate-400">Advanced tools for market analysis</p>
         </div>
       </div>
@@ -63,10 +63,10 @@ export function Analysis() {
       <div className="flex gap-2">
         <button
           onClick={() => setActiveTab('screener')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'screener'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           <Filter className="w-4 h-4" />
@@ -74,10 +74,10 @@ export function Analysis() {
         </button>
         <button
           onClick={() => setActiveTab('technical')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'technical'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
@@ -85,10 +85,10 @@ export function Analysis() {
         </button>
         <button
           onClick={() => setActiveTab('signals')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'signals'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           <Zap className="w-4 h-4" />
@@ -96,10 +96,10 @@ export function Analysis() {
         </button>
         <button
           onClick={() => setActiveTab('compare')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'compare'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           <Target className="w-4 h-4" />
@@ -112,13 +112,13 @@ export function Analysis() {
         <div className="grid grid-cols-12 gap-6">
           {/* Filter Sidebar */}
           <div className="col-span-3">
-            <div className="bg-slate-800 rounded-xl border border-slate-700 p-4 sticky top-6">
-              <h3 className="text-slate-50 mb-4">Filters</h3>
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4 sticky top-6">
+              <h3 className="text-white font-bold mb-4">Filters</h3>
               
               <div className="space-y-4">
                 <div>
-                  <label className="text-slate-400 mb-2 block">Market Cap</label>
-                  <select className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-slate-300">
+                  <label className="text-slate-300 mb-2 block text-sm font-semibold">Market Cap</label>
+                  <select className="w-full bg-slate-800/50 border border-slate-700/50 rounded px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
                     <option>All</option>
                     <option>Large Cap (&gt;$10B)</option>
                     <option>Mid Cap ($2B-$10B)</option>
@@ -157,11 +157,11 @@ export function Analysis() {
                   </select>
                 </div>
 
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                <button className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-2 px-4 rounded-lg transition-all font-semibold shadow-lg shadow-emerald-500/30">
                   Apply Filters
                 </button>
                 
-                <button className="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 py-2 px-4 rounded-lg transition-colors">
+                <button className="w-full bg-slate-800/50 hover:bg-slate-700/50 text-slate-300 py-2 px-4 rounded-lg transition-all border border-slate-700/50 font-semibold">
                   Reset
                 </button>
               </div>

@@ -135,18 +135,18 @@ export function Stocks() {
   );
 
   return (
-    <div className="p-4 lg:p-8 space-y-6">
+    <div className="p-4 lg:p-8 space-y-6 relative">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Watchlist</h1>
-          <p className="text-gray-600">Track real-time prices for your favorite stocks</p>
+          <h1 className="text-2xl font-black text-white">My Watchlist</h1>
+          <p className="text-slate-400">Track real-time prices for your favorite stocks</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={fetchQuotes}
             disabled={refreshing || watchlist.length === 0}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 border border-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-800 hover:border-emerald-500/30 transition-all disabled:opacity-50"
             title="Refresh prices"
           >
             <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
@@ -154,7 +154,7 @@ export function Stocks() {
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold transition-all shadow-lg shadow-emerald-500/30"
           >
             <Plus size={20} />
             <span>Add Stock</span>
@@ -164,15 +164,15 @@ export function Stocks() {
 
       {/* Search Bar */}
       {watchlist.length > 0 && (
-        <div className="bg-white rounded-xl p-4 shadow-sm">
+        <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search your watchlist..."
-              className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50"
             />
           </div>
         </div>
@@ -180,17 +180,17 @@ export function Stocks() {
 
       {/* Empty State */}
       {!loading && watchlist.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <TrendingUp className="text-blue-600" size={32} />
+        <div className="text-center py-16 bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl">
+          <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <TrendingUp className="text-emerald-400" size={32} />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No stocks in your watchlist</h3>
-          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+          <h3 className="text-xl font-bold text-white mb-2">No stocks in your watchlist</h3>
+          <p className="text-slate-400 mb-6 max-w-md mx-auto">
             Add stocks to track their real-time prices and stay updated on market movements
           </p>
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold transition-all shadow-lg shadow-emerald-500/30"
           >
             Add Your First Stock
           </button>
@@ -201,10 +201,10 @@ export function Stocks() {
       {loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-white rounded-xl p-6 shadow-sm animate-pulse">
-              <div className="h-6 bg-gray-200 rounded w-20 mb-4"></div>
-              <div className="h-10 bg-gray-200 rounded w-32 mb-3"></div>
-              <div className="h-5 bg-gray-200 rounded w-24"></div>
+            <div key={i} className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6 animate-pulse">
+              <div className="h-6 bg-slate-700/50 rounded w-20 mb-4"></div>
+              <div className="h-10 bg-slate-700/50 rounded w-32 mb-3"></div>
+              <div className="h-5 bg-slate-700/50 rounded w-24"></div>
             </div>
           ))}
         </div>
@@ -220,60 +220,61 @@ export function Stocks() {
             return (
               <div
                 key={symbol}
-                className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow relative group"
+                className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6 hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all relative group"
               >
+                {/* Live Indicator */}
+                <div className="absolute top-4 left-4 flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span className="text-xs text-emerald-400 font-semibold">Live</span>
+                </div>
+
                 {/* Remove Button */}
                 <button
                   onClick={() => removeSymbol(symbol)}
-                  className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-red-500/10 text-slate-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity border border-red-500/20"
                   title="Remove from watchlist"
                 >
                   <X size={16} />
                 </button>
 
                 {/* Symbol */}
-                <div className="mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">{symbol}</h3>
+                <div className="mb-4 mt-6">
+                  <h3 className="text-2xl font-black text-white">{symbol}</h3>
                 </div>
 
                 {/* Price & Change */}
                 {quote ? (
                   <>
                     <div className="mb-3">
-                      <p className="text-3xl font-bold text-gray-900">
+                      <p className="text-4xl font-black text-white">
                         ${quote.price?.toFixed(2) || '0.00'}
                       </p>
                     </div>
                     
-                    <div className={`flex items-center gap-2 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`flex items-center gap-2 text-lg font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                       {isPositive ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
                       <div>
-                        <span className="text-lg font-semibold">
+                        <span className="text-lg font-black">
                           {isPositive ? '+' : ''}{quote.changePercent?.toFixed(2)}%
                         </span>
-                        <span className="text-sm ml-2">
+                        <span className="text-sm ml-2 text-slate-400">
                           ({isPositive ? '+' : ''}${quote.change?.toFixed(2)})
                         </span>
                       </div>
                     </div>
 
                     {quote.volume && (
-                      <div className="mt-3 pt-3 border-t text-sm text-gray-500">
+                      <div className="mt-3 pt-3 border-t border-slate-700/50 text-sm text-slate-400">
                         Vol: {(quote.volume / 1000000).toFixed(2)}M
                       </div>
                     )}
                   </>
                 ) : (
                   <div className="animate-pulse space-y-3">
-                    <div className="h-10 bg-gray-200 rounded w-28"></div>
-                    <div className="h-6 bg-gray-200 rounded w-20"></div>
+                    <div className="h-10 bg-slate-700/50 rounded w-28"></div>
+                    <div className="h-6 bg-slate-700/50 rounded w-20"></div>
                   </div>
                 )}
-
-                {/* Last Updated */}
-                <div className="mt-3 text-xs text-gray-400">
-                  Updated {refreshing ? 'now' : 'just now'}
-                </div>
               </div>
             );
           })}
@@ -282,27 +283,27 @@ export function Stocks() {
 
       {/* No Search Results */}
       {!loading && watchlist.length > 0 && filteredWatchlist.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-          <Search className="mx-auto text-gray-400 mb-3" size={48} />
-          <p className="text-gray-600">No stocks match "{searchQuery}"</p>
+        <div className="text-center py-12 bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl">
+          <Search className="mx-auto text-slate-400 mb-3" size={48} />
+          <p className="text-slate-400">No stocks match "{searchQuery}"</p>
         </div>
       )}
 
       {/* Add Symbol Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-            <h3 className="text-2xl font-bold mb-2">Add to Watchlist</h3>
-            <p className="text-gray-600 mb-6">Enter a stock symbol to track</p>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-2xl font-black text-white mb-2">Add to Watchlist</h3>
+            <p className="text-slate-400 mb-6">Enter a stock symbol to track</p>
             <form onSubmit={addSymbol}>
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2 text-gray-700">Stock Symbol</label>
+                <label className="block text-sm font-semibold mb-2 text-slate-300">Stock Symbol</label>
                 <input
                   type="text"
                   value={newSymbol}
                   onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
                   placeholder="e.g., AAPL, NVDA, TSLA"
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg uppercase text-lg font-medium focus:border-blue-500 focus:outline-none"
+                  className="w-full p-3 bg-slate-800/50 border-2 border-slate-700/50 rounded-lg uppercase text-lg font-medium text-white focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                   autoFocus
                   required
                 />
@@ -314,13 +315,13 @@ export function Stocks() {
                     setShowAddModal(false);
                     setNewSymbol('');
                   }}
-                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+                  className="flex-1 px-4 py-3 border-2 border-slate-700/50 rounded-lg hover:bg-slate-800/50 font-semibold text-slate-300 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold transition-all shadow-lg shadow-emerald-500/30"
                 >
                   Add Stock
                 </button>

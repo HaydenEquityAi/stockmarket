@@ -44,76 +44,76 @@ export function SmartMoney() {
   });
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 lg:p-8 space-y-6 relative">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-50 mb-2">Smart Money</h1>
+          <h1 className="text-2xl font-black text-white mb-2">Smart Money</h1>
           <p className="text-slate-400">Track trades from Congress, hedge funds, and corporate insiders</p>
         </div>
       </div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-6 border border-blue-500 shadow-lg">
+        <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-xl rounded-xl p-6 border border-emerald-500/30 shadow-2xl shadow-emerald-500/10">
           <div className="flex items-center gap-2 mb-3">
-            <Users className="w-6 h-6 text-white" />
-            <span className="text-blue-100">Congressional Trades</span>
+            <Users className="w-6 h-6 text-emerald-400" />
+            <span className="text-emerald-300 font-semibold">Congressional Trades</span>
           </div>
-          <div className="font-mono text-white mb-2">234</div>
-          <div className="text-blue-100">This month</div>
+          <div className="font-mono text-white text-2xl font-black mb-2">234</div>
+          <div className="text-emerald-300 text-sm">This month</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-6 border border-purple-500 shadow-lg">
+        <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-xl p-6 border border-purple-500/30 shadow-2xl shadow-purple-500/10">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-6 h-6 text-white" />
-            <span className="text-purple-100">Hedge Fund Moves</span>
+            <TrendingUp className="w-6 h-6 text-purple-400" />
+            <span className="text-purple-300 font-semibold">Hedge Fund Moves</span>
           </div>
-          <div className="font-mono text-white mb-2">1,245</div>
-          <div className="text-purple-100">Last 30 days</div>
+          <div className="font-mono text-white text-2xl font-black mb-2">1,245</div>
+          <div className="text-purple-300 text-sm">Last 30 days</div>
         </div>
 
-        <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-xl p-6 border border-emerald-500 shadow-lg">
+        <div className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 backdrop-blur-xl rounded-xl p-6 border border-cyan-500/30 shadow-2xl shadow-cyan-500/10">
           <div className="flex items-center gap-2 mb-3">
-            <Award className="w-6 h-6 text-white" />
-            <span className="text-emerald-100">Avg Success Rate</span>
+            <Award className="w-6 h-6 text-cyan-400" />
+            <span className="text-cyan-300 font-semibold">Avg Success Rate</span>
           </div>
-          <div className="font-mono text-white mb-2">84.3%</div>
-          <div className="text-emerald-100">All traders</div>
+          <div className="font-mono text-white text-2xl font-black mb-2">84.3%</div>
+          <div className="text-cyan-300 text-sm">All traders</div>
         </div>
       </div>
 
       {/* Tabs and Content */}
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Main Content */}
-        <div className="col-span-8">
+        <div className="lg:col-span-8">
           {/* Tabs */}
           <div className="flex gap-2 mb-6">
             <button
               onClick={() => setActiveTab('congress')}
-              className={`px-6 py-3 rounded-lg transition-all ${
+              className={`px-6 py-3 rounded-lg transition-all font-semibold ${
                 activeTab === 'congress'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+                  : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
               }`}
             >
               Congress
             </button>
             <button
               onClick={() => setActiveTab('hedge-funds')}
-              className={`px-6 py-3 rounded-lg transition-all ${
+              className={`px-6 py-3 rounded-lg transition-all font-semibold ${
                 activeTab === 'hedge-funds'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+                  : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
               }`}
             >
               Hedge Funds
             </button>
             <button
               onClick={() => setActiveTab('insiders')}
-              className={`px-6 py-3 rounded-lg transition-all ${
+              className={`px-6 py-3 rounded-lg transition-all font-semibold ${
                 activeTab === 'insiders'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+                  : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
               }`}
             >
               Insiders
@@ -215,22 +215,22 @@ export function SmartMoney() {
         </div>
 
         {/* Leaderboard Sidebar */}
-        <div className="col-span-4">
-          <div className="bg-slate-800 rounded-xl border border-slate-700 p-6 sticky top-6">
+        <div className="lg:col-span-4">
+          <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6 sticky top-6">
             <div className="flex items-center gap-2 mb-6">
-              <Award className="w-6 h-6 text-yellow-500" />
-              <h2 className="text-slate-50">Leaderboard</h2>
+              <Award className="w-6 h-6 text-amber-400" />
+              <h2 className="text-white font-black">Leaderboard</h2>
             </div>
 
             <div className="space-y-4">
               {leaderboard.map((trader) => (
                 <div
                   key={trader.rank}
-                  className="bg-slate-900/50 rounded-lg p-4 border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer"
+                  className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50 hover:border-emerald-500/30 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      trader.rank === 1 ? 'bg-yellow-500 text-slate-900' :
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+                      trader.rank === 1 ? 'bg-amber-500 text-slate-900' :
                       trader.rank === 2 ? 'bg-slate-400 text-slate-900' :
                       trader.rank === 3 ? 'bg-orange-600 text-white' :
                       'bg-slate-700 text-slate-300'
@@ -238,30 +238,30 @@ export function SmartMoney() {
                       #{trader.rank}
                     </div>
                     <div className="flex-1">
-                      <div className="text-slate-50">{trader.name}</div>
+                      <div className="text-white font-bold">{trader.name}</div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <div className="text-slate-500">Trades</div>
-                      <div className="text-slate-300">{trader.trades}</div>
+                      <div className="text-slate-400 text-sm">Trades</div>
+                      <div className="text-slate-300 font-semibold">{trader.trades}</div>
                     </div>
                     <div>
-                      <div className="text-slate-500">Success</div>
-                      <div className="text-emerald-500">{trader.success}%</div>
+                      <div className="text-slate-400 text-sm">Success</div>
+                      <div className="text-emerald-400 font-bold">{trader.success}%</div>
                     </div>
                   </div>
 
-                  <div className="mt-2 pt-2 border-t border-slate-700">
-                    <div className="text-slate-500">Total Gain</div>
-                    <div className="text-emerald-500 font-mono">{trader.gain}</div>
+                  <div className="mt-2 pt-2 border-t border-slate-700/50">
+                    <div className="text-slate-400 text-sm">Total Gain</div>
+                    <div className="text-emerald-400 font-mono font-bold">{trader.gain}</div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <button className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors">
+            <button className="w-full mt-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3 px-4 rounded-lg transition-all font-semibold shadow-lg shadow-emerald-500/30">
               View Full Rankings
             </button>
           </div>

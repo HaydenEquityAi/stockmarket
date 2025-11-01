@@ -44,21 +44,26 @@ export function NewsCard(props: { news?: LegacyNews; article?: Article }) {
   };
 
   const CardInner = (
-    <div className="block bg-white rounded-xl p-4 border hover:shadow-lg transition-all group">
+    <div className="block bg-slate-900/50 backdrop-blur-xl rounded-xl overflow-hidden border border-slate-700/50 hover:border-emerald-500/30 transition-all group">
       {article.imageUrl && (
-        <img src={article.imageUrl} alt={article.title} className="w-full h-40 object-cover rounded-lg mb-3" />
+        <div className="relative h-48 overflow-hidden">
+          <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+        </div>
       )}
-      <h3 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 line-clamp-2 mb-2">
-        {article.title}
-        <ExternalLink className="inline w-4 h-4 ml-1 text-gray-400" />
-      </h3>
-      {article.summary && (
-        <p className="text-xs text-gray-600 mb-3 line-clamp-2">{article.summary}</p>
-      )}
-      <div className="flex items-center gap-2 text-xs text-gray-500">
-        <span>{article.source}</span>
-        <span>•</span>
-        <span>{timeAgo(article.publishedAt)}</span>
+      <div className="p-4">
+        <h3 className="text-sm font-bold text-white group-hover:text-emerald-400 line-clamp-2 mb-2 transition-colors">
+          {article.title}
+          <ExternalLink className="inline w-4 h-4 ml-1 text-slate-400" />
+        </h3>
+        {article.summary && (
+          <p className="text-xs text-slate-400 mb-3 line-clamp-3">{article.summary}</p>
+        )}
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <span>{article.source}</span>
+          <span>•</span>
+          <span className="text-emerald-400">{timeAgo(article.publishedAt)}</span>
+        </div>
       </div>
     </div>
   );

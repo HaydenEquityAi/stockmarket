@@ -51,10 +51,10 @@ export function Markets() {
   ];
 
   return (
-    <div className="p-4 lg:p-8 space-y-4 lg:space-y-6">
+    <div className="p-4 lg:p-8 space-y-4 lg:space-y-6 relative">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-50 mb-2">Markets</h1>
+          <h1 className="text-2xl font-black text-white mb-2">Markets</h1>
           <p className="text-slate-400">Global market overview and analysis</p>
         </div>
       </div>
@@ -96,40 +96,40 @@ export function Markets() {
       <div className="flex gap-2">
         <button
           onClick={() => setActiveTab('indices')}
-          className={`px-6 py-3 rounded-lg transition-all ${
+          className={`px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'indices'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           Indices
         </button>
         <button
           onClick={() => setActiveTab('sectors')}
-          className={`px-6 py-3 rounded-lg transition-all ${
+          className={`px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'sectors'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           Sectors
         </button>
         <button
           onClick={() => setActiveTab('global')}
-          className={`px-6 py-3 rounded-lg transition-all ${
+          className={`px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'global'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           Global
         </button>
         <button
           onClick={() => setActiveTab('commodities')}
-          className={`px-6 py-3 rounded-lg transition-all ${
+          className={`px-6 py-3 rounded-lg transition-all font-semibold ${
             activeTab === 'commodities'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-slate-900/50 text-slate-400 hover:bg-slate-800/50 hover:text-white border border-slate-700/50'
           }`}
         >
           Commodities & Crypto
@@ -139,26 +139,34 @@ export function Markets() {
       {/* Tab Content */}
       {activeTab === 'indices' && (
         <div>
-          <h2 className="text-slate-50 mb-4">Major Indices</h2>
+          <h2 className="text-white font-black mb-4">Major Indices</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {loading && indices.length === 0 ? (
               <div className="text-slate-400">Loading indices...</div>
             ) : (
               indices.map((q) => (
-                <div key={q.symbol} className="bg-slate-800 rounded-xl border border-slate-700 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="text-slate-50">{q.symbol}</div>
-                    <div className={`${q.change >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>{q.changePercent?.toFixed(2)}%</div>
+                <div key={q.symbol} className="bg-slate-900/50 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 hover:border-emerald-500/30 transition-all relative overflow-hidden">
+                  {/* Glowing effect */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                  <div className="relative">
+                    <div className="text-slate-400 text-sm mb-2 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                      {q.symbol}
+                    </div>
+                    <div className="text-4xl font-black text-white mb-2">${q.price?.toFixed(2)}</div>
+                    <div className={`flex items-center gap-2 font-bold ${q.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {q.change >= 0 ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+                      <span>{q.changePercent?.toFixed(2)}%</span>
+                    </div>
                   </div>
-                  <div className="text-slate-50 font-mono text-xl">${q.price?.toFixed(2)}</div>
                 </div>
               ))
             )}
           </div>
 
-          <h2 className="text-slate-50 mb-4">Other Indices</h2>
-          <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-            <div className="grid grid-cols-4 gap-4 p-4 bg-slate-900 text-slate-400 border-b border-slate-700">
+          <h2 className="text-white font-black mb-4">Other Indices</h2>
+          <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl overflow-hidden">
+            <div className="grid grid-cols-4 gap-4 p-4 bg-slate-800/50 text-slate-400 border-b border-slate-700/50 font-semibold text-sm">
               <div>Index</div>
               <div>Value</div>
               <div>Change</div>
@@ -171,13 +179,13 @@ export function Markets() {
             ].map((index) => {
               const isPositive = index.change >= 0;
               return (
-                <div key={index.name} className="grid grid-cols-4 gap-4 p-4 border-b border-slate-700 last:border-0 hover:bg-slate-700/50 transition-colors">
-                  <div className="text-slate-50">{index.name}</div>
-                  <div className="text-slate-50 font-mono">{index.value.toLocaleString()}</div>
-                  <div className={`font-mono ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+                <div key={index.name} className="grid grid-cols-4 gap-4 p-4 border-b border-slate-700/30 last:border-0 hover:bg-slate-800/50 transition-colors">
+                  <div className="text-white font-semibold">{index.name}</div>
+                  <div className="text-white font-mono">{index.value.toLocaleString()}</div>
+                  <div className={`font-mono font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                     {isPositive ? '+' : ''}{index.change.toFixed(2)}
                   </div>
-                  <div className={`flex items-center gap-1 ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+                  <div className={`flex items-center gap-1 font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                     {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                     <span className="font-mono">{isPositive ? '+' : ''}{index.changePercent.toFixed(2)}%</span>
                   </div>
@@ -190,8 +198,8 @@ export function Markets() {
 
       {activeTab === 'sectors' && (
         <div>
-          <h2 className="text-slate-50 mb-4">Sector Performance</h2>
-          <div className="bg-slate-800 rounded-xl border border-slate-700 p-6">
+          <h2 className="text-white font-black mb-4">Sector Performance</h2>
+          <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6">
             <div className="h-96">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sectorData}>
@@ -269,9 +277,9 @@ export function Markets() {
       {activeTab === 'commodities' && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-slate-50 mb-4">Commodities</h2>
-            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-              <div className="grid grid-cols-4 gap-4 p-4 bg-slate-900 text-slate-400 border-b border-slate-700">
+            <h2 className="text-white font-black mb-4">Commodities</h2>
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl overflow-hidden">
+              <div className="grid grid-cols-4 gap-4 p-4 bg-slate-800/50 text-slate-400 border-b border-slate-700/50 font-semibold text-sm">
                 <div>Commodity</div>
                 <div>Price</div>
                 <div>Change</div>
@@ -280,13 +288,13 @@ export function Markets() {
               {commodities.map((commodity) => {
                 const isPositive = commodity.change >= 0;
                 return (
-                  <div key={commodity.name} className="grid grid-cols-4 gap-4 p-4 border-b border-slate-700 last:border-0 hover:bg-slate-700/50 transition-colors cursor-pointer">
-                    <div className="text-slate-50">{commodity.name}</div>
-                    <div className="text-slate-50 font-mono">${commodity.price.toFixed(2)}</div>
-                    <div className={`font-mono ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+                  <div key={commodity.name} className="grid grid-cols-4 gap-4 p-4 border-b border-slate-700/30 last:border-0 hover:bg-slate-800/50 transition-colors cursor-pointer">
+                    <div className="text-white font-semibold">{commodity.name}</div>
+                    <div className="text-white font-mono">${commodity.price.toFixed(2)}</div>
+                    <div className={`font-mono font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                       {isPositive ? '+' : ''}{commodity.change.toFixed(2)}
                     </div>
-                    <div className={`flex items-center gap-1 ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+                    <div className={`flex items-center gap-1 font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                       {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                       <span className="font-mono">{isPositive ? '+' : ''}{commodity.changePercent.toFixed(2)}%</span>
                     </div>
@@ -297,24 +305,24 @@ export function Markets() {
           </div>
 
           <div>
-            <h2 className="text-slate-50 mb-4">Cryptocurrency</h2>
+            <h2 className="text-white font-black mb-4">Cryptocurrency</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cryptos.map((crypto) => {
                 const isPositive = crypto.change >= 0;
                 return (
-                  <div key={crypto.symbol} className="bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-slate-600 transition-all cursor-pointer">
+                  <div key={crypto.symbol} className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6 hover:border-emerald-500/30 transition-all cursor-pointer">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <div className="text-slate-50 mb-1">{crypto.symbol}</div>
-                        <div className="text-slate-400">{crypto.name}</div>
+                        <div className="text-white font-bold mb-1">{crypto.symbol}</div>
+                        <div className="text-slate-400 text-sm">{crypto.name}</div>
                       </div>
-                      <div className={`flex items-center gap-1 ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+                      <div className={`flex items-center gap-1 font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                         {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                         <span className="font-mono">{isPositive ? '+' : ''}{crypto.changePercent.toFixed(2)}%</span>
                       </div>
                     </div>
-                    <div className="font-mono text-slate-50 mb-2">${crypto.price.toLocaleString()}</div>
-                    <div className={`font-mono ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+                    <div className="font-mono text-white text-xl font-black mb-2">${crypto.price.toLocaleString()}</div>
+                    <div className={`font-mono font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                       {isPositive ? '+' : ''}${crypto.change.toFixed(2)}
                     </div>
                   </div>
