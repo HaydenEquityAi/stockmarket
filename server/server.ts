@@ -63,7 +63,8 @@ wss.on('connection', (ws) => {
       }
 
       if (data.type === 'unsubscribe') {
-        console.log(`❌ Client unsubscribed from ${client.symbol}`);
+        const symbol = client.symbol || 'unknown';
+        console.log(`❌ Client unsubscribed from ${symbol}`);
         subscriptions.delete(client);
         client.symbol = undefined;
       }
@@ -79,7 +80,7 @@ wss.on('connection', (ws) => {
 
   const heartbeat = setInterval(() => {
     if (ws.readyState === ws.OPEN) {
-      ws.send(JSON.stringify({ type: 'heartbeat', timestamp: new Date(), subscribedTo: client.symbol }));
+      ws.send(JSON.stringify({ type: 'heartbeat', timestamp: new Date(), subscribedTo: client.symbol || null }));
     } else {
       clearInterval(heartbeat);
     }

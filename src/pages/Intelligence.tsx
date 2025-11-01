@@ -8,6 +8,7 @@ export function Intelligence() {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSentiment, setSelectedSentiment] = useState('all');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchNews();
@@ -16,28 +17,40 @@ export function Intelligence() {
   const fetchNews = async () => {
     try {
       setLoading(true);
+      setError(null);
+      console.log('📰 Fetching news from:', `${API_URL}/news`);
+      
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_URL}/news`, {
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
+      
+      console.log('📰 News response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
-      setNews(data.news || []);
+      console.log('📰 News response data:', data);
+      
+      // Handle both response formats: { news: [...] } or direct array
+      const articles = Array.isArray(data) ? data : (data.news || []);
+      console.log('📰 Parsed articles:', articles.length);
+      
+      setNews(articles);
     } catch (error) {
       console.error('Failed to fetch news:', error);
+      setError('Failed to load news. Please try again.');
+      setNews([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredNews = selectedSentiment === 'all' ? news : news.filter((a: any) => a.sentiment === selectedSentiment);
-
-  const timeAgo = (dateString: string) => {
-    const seconds = Math.floor((Date.now() - new Date(dateString).getTime()) / 1000);
-    if (seconds < 60) return 'just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return `${Math.floor(seconds / 86400)}d ago`;
-  };
+  const filteredNews = selectedSentiment === 'all' 
+    ? news 
+    : news.filter((a: any) => a.sentiment === selectedSentiment);
 
   return (
     <div className="min-h-screen p-4 lg:p-8 space-y-4 lg:space-y-6 relative">
@@ -50,10 +63,16 @@ export function Intelligence() {
               </div>
               <div>
                 <h1 className="text-2xl font-black text-white">Market Intelligence Feed</h1>
-                <p className="text-sm text-slate-400">{news.length} articles • Updated continuously</p>
+                <p className="text-sm text-slate-400">
+                  {loading ? 'Loading...' : `${news.length} articles`} • Updated continuously
+                </p>
               </div>
             </div>
-            <button onClick={fetchNews} disabled={loading} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold disabled:opacity-50 transition-all shadow-lg shadow-emerald-500/30">
+            <button 
+              onClick={fetchNews} 
+              disabled={loading} 
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold disabled:opacity-50 transition-all shadow-lg shadow-emerald-500/30"
+            >
               <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
               {loading ? 'Loading...' : 'Refresh'}
             </button>
@@ -83,6 +102,18 @@ export function Intelligence() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        {error && (
+          <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+            <p className="text-red-400">{error}</p>
+            <button 
+              onClick={fetchNews}
+              className="mt-2 text-red-400 hover:text-red-300 underline text-sm"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1,2,3,4,5,6].map((i) => (
@@ -96,13 +127,23 @@ export function Intelligence() {
         ) : filteredNews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredNews.map((article: any) => (
-              <NewsCard key={article.id} article={article} />
+              <NewsCard key={article.id || article.title} article={article} />
             ))}
           </div>
         ) : (
           <div className="text-center py-12 bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-xl">
             <Newspaper className="mx-auto text-slate-400 mb-4" size={48} />
-            <p className="text-slate-400">No news articles found</p>
+            <p className="text-slate-400 mb-2">
+              {error ? 'Failed to load news articles' : 'No news articles found'}
+            </p>
+            {!error && (
+              <button 
+                onClick={fetchNews}
+                className="mt-4 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold transition-all"
+              >
+                Refresh News
+              </button>
+            )}
           </div>
         )}
       </div>

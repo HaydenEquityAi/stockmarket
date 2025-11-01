@@ -122,7 +122,10 @@ router.get('/portfolio/history', getPortfolioHistory);
 // Portfolio positions (user-owned holdings with real-time enrichment)
 router.get('/portfolio/positions', authenticate, async (req: any, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     const positions = await Position.find({ userId });
     const symbols = positions.map((p: any) => p.symbol);
     if (symbols.length === 0) {
@@ -154,7 +157,10 @@ router.get('/portfolio/positions', authenticate, async (req: any, res) => {
 router.post('/portfolio/positions', authenticate, async (req: any, res) => {
   try {
     const { symbol, quantity, avgPrice } = req.body || {};
-    const userId = req.user.id;
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     if (!symbol || !quantity || !avgPrice) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -179,7 +185,10 @@ router.post('/portfolio/positions', authenticate, async (req: any, res) => {
 router.delete('/portfolio/positions/:symbol', authenticate, async (req: any, res) => {
   try {
     const { symbol } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     await Position.deleteOne({ userId, symbol: String(symbol).toUpperCase() });
     res.json({ success: true });
   } catch (error) {
