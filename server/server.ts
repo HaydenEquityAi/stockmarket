@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
 import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
@@ -18,17 +18,39 @@ const wss = new WebSocketServer({ server });
 const allowedOrigins = [
   'https://www.brokerai.ai',
   'https://brokerai.ai',
-  'https://stockmarket-one.vercel.app'
+  'https://stockmarket-one.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
 ];
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(process.env.FRONTEND_URL);
 }
-const corsOptions = {
-  origin: allowedOrigins,
+
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`Blocked CORS request from origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  optionsSuccessStatus: 200
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  optionsSuccessStatus: 200,
+  maxAge: 86400 // 24 hours
 };
+
 app.use(cors(corsOptions));
+
+// Explicitly handle preflight OPTIONS requests
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 // Connect to MongoDB
