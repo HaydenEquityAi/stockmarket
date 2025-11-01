@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Switch } from '../components/ui/switch';
 import { 
   TrendingUp, 
   BarChart3, 
@@ -455,9 +451,9 @@ export function Landing() {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-3 py-1">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200 text-sm font-semibold">
                   🚀 Now with AI-powered automation
-                </Badge>
+                </span>
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                   AI-Powered
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Portfolio Management</span>
@@ -469,22 +465,19 @@ export function Landing() {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
+                <button 
                   onClick={handleStartTrial}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
                 >
                   Start Free Trial
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="px-8 py-3 text-lg font-semibold border-gray-300 hover:bg-gray-50"
+                  <ArrowRight className="h-5 w-5" />
+                </button>
+                <button 
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:border-gray-400 hover:bg-gray-50 text-lg font-semibold transition-all"
                 >
-                  <Play className="mr-2 h-5 w-5" />
+                  <Play className="h-5 w-5" />
                   View Demo
-                </Button>
+                </button>
               </div>
               
               <p className="text-sm text-gray-500">
@@ -588,8 +581,8 @@ export function Landing() {
             {features.map((feature, index) => {
               const IconComponent = feature.icon;
               return (
-                <Card key={index} className="group hover:shadow-2xl hover:scale-105 transition-all duration-300 border-0 shadow-sm min-h-64">
-                  <CardContent className="p-8 h-full flex flex-col">
+                <div key={index} className="bg-white rounded-xl shadow-sm border-0 hover:shadow-2xl hover:scale-105 transition-all duration-300 group min-h-64">
+                  <div className="p-8 h-full flex flex-col">
                     <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl ${feature.color} mb-6 group-hover:scale-110 transition-transform duration-300`}>
                       <IconComponent className="h-8 w-8" />
                     </div>
@@ -600,12 +593,12 @@ export function Landing() {
                       {feature.description}
                     </p>
                     <div className="mt-auto">
-                      <Badge className="bg-green-100 text-green-700 border-green-200 px-3 py-1 text-sm font-medium">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-200 text-sm font-medium">
                         {feature.metric}
-                      </Badge>
+                      </span>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -629,18 +622,25 @@ export function Landing() {
               <span className={`text-sm font-medium ${!isAnnual ? 'text-gray-900' : 'text-gray-500'}`}>
                 Monthly
               </span>
-              <Switch
-                checked={isAnnual}
-                onCheckedChange={setIsAnnual}
-                className="data-[state=checked]:bg-blue-600"
-              />
+              <button
+                onClick={() => setIsAnnual(!isAnnual)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  isAnnual ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+                role="switch"
+                aria-checked={isAnnual}
+              >
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  isAnnual ? 'translate-x-6' : 'translate-x-1'
+                }`} />
+              </button>
               <span className={`text-sm font-medium ${isAnnual ? 'text-gray-900' : 'text-gray-500'}`}>
                 Annual
               </span>
               {isAnnual && (
-                <Badge className="bg-green-100 text-green-700 border-green-200 ml-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-200 text-sm font-semibold ml-2">
                   Save 20%
-                </Badge>
+                </span>
               )}
             </div>
           </div>
@@ -651,9 +651,9 @@ export function Landing() {
                                    plan.id === 'growth' ? Zap : Crown;
               
               return (
-                <Card 
+                <div 
                   key={plan.id} 
-                  className={`relative transition-all duration-300 hover:shadow-xl ${
+                  className={`relative bg-white rounded-xl border transition-all duration-300 hover:shadow-xl ${
                     plan.popular 
                       ? 'border-blue-500 shadow-lg scale-105' 
                       : 'border-gray-200 hover:border-gray-300'
@@ -661,13 +661,13 @@ export function Landing() {
                 >
                   {plan.popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-blue-500 text-white px-4 py-1">
+                      <span className="inline-flex items-center px-4 py-1 rounded-full bg-blue-500 text-white text-sm font-semibold">
                         Most Popular
-                      </Badge>
+                      </span>
                     </div>
                   )}
                   
-                  <CardHeader className="text-center pb-8">
+                  <div className="text-center pb-8 pt-8">
                     <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${
                       plan.id === 'starter' ? 'bg-yellow-100 text-yellow-600' :
                       plan.id === 'growth' ? 'bg-blue-100 text-blue-600' :
@@ -676,21 +676,21 @@ export function Landing() {
                       <IconComponent className="h-8 w-8" />
                     </div>
                     
-                    <CardTitle className="text-2xl font-bold text-gray-900">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
                       {plan.name}
-                    </CardTitle>
+                    </h3>
                     
-                    <CardDescription className="text-gray-600 mt-2">
+                    <p className="text-gray-600 mt-2 mb-6">
                       {plan.description}
-                    </CardDescription>
+                    </p>
                     
                     <div className="mt-6">
                       <span className="text-5xl font-bold text-gray-900">${getPrice(plan.price)}</span>
                       <span className="text-gray-600 ml-2">{getPriceText(plan.price)}</span>
                     </div>
-                  </CardHeader>
+                  </div>
 
-                  <CardContent className="pt-0">
+                  <div className="px-6 pb-6">
                     <ul className="space-y-4 mb-8">
                       {plan.features.map((feature, index) => {
                         const FeatureIcon = feature.icon;
@@ -716,27 +716,28 @@ export function Landing() {
                       })}
                     </ul>
 
-                    <Button
-                      className={`w-full ${
-                        plan.popular 
-                          ? 'bg-blue-600 hover:bg-blue-700' 
-                          : ''
-                      }`}
-                      variant={plan.buttonVariant}
+                    <button
                       onClick={() => handleGetStarted(plan.id)}
                       disabled={loading === plan.id}
+                      className={`w-full py-3 rounded-lg font-semibold transition-colors ${
+                        plan.popular
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                          : plan.buttonVariant === 'outline'
+                          ? 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50'
+                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {loading === plan.id ? (
-                        <div className="flex items-center">
+                        <div className="flex items-center justify-center">
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                           Processing...
                         </div>
                       ) : (
                         isLoggedIn === false ? 'Sign Up to Start' : (isLoggedIn === null ? 'Sign Up to Start' : plan.buttonText)
                       )}
-                    </Button>
-                  </CardContent>
-                </Card>
+                    </button>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -775,8 +776,8 @@ export function Landing() {
               >
                 {testimonials.map((testimonial, index) => (
                   <div key={index} className="w-full flex-shrink-0 px-4">
-                    <Card className="border-0 shadow-lg">
-                      <CardContent className="p-8 text-center">
+                    <div className="bg-white rounded-xl shadow-lg border-0">
+                      <div className="p-8 text-center">
                         <div className="flex items-center justify-center mb-6">
                           {[...Array(testimonial.rating)].map((_, i) => (
                             <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -796,8 +797,8 @@ export function Landing() {
                             <div className="text-sm text-blue-600 font-medium">{testimonial.companySize}</div>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -871,14 +872,13 @@ export function Landing() {
           </div>
           
           <div className="space-y-6">
-            <Button 
-              size="lg" 
-              className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            <button 
               onClick={handleStartTrial}
+              className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-blue-600 hover:bg-gray-50 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Start Free Trial
-              <ArrowRight className="ml-3 h-6 w-6" />
-            </Button>
+              <ArrowRight className="h-6 w-6" />
+            </button>
             <p className="text-blue-100 text-sm">
               No credit card required • 14-day free trial • Cancel anytime • Setup in 5 minutes
             </p>
@@ -943,14 +943,13 @@ export function Landing() {
       {/* Floating CTA Button */}
       {showFloatingCTA && (
         <div className="fixed bottom-6 right-6 z-50">
-          <Button
-            size="lg"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 rounded-full"
+          <button
             onClick={handleStartTrial}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 rounded-full font-semibold"
           >
-            <ArrowRight className="h-5 w-5 mr-2" />
+            <ArrowRight className="h-5 w-5" />
             Start Free Trial
-          </Button>
+          </button>
         </div>
       )}
     </div>
