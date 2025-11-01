@@ -22,7 +22,7 @@ export async function fetchFinancialNews(): Promise<NewsArticle[]> {
       console.error(`NewsAPI error: ${response.status}`);
       return [];
     }
-    const data = await response.json();
+    const data = await response.json() as any;
     return (data.articles || []).map((article: any, index: number) => ({
       id: `news-${Date.now()}-${index}`,
       title: article.title,
@@ -37,5 +37,4 @@ export async function fetchFinancialNews(): Promise<NewsArticle[]> {
     return [];
   }
 }
-
 

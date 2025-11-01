@@ -31,7 +31,7 @@ async function fetchPolygonQuotes(symbols: string[]): Promise<Quote[]> {
         console.error(`Polygon API error for ${symbol}:`, res.statusText);
         continue;
       }
-      const data = await res.json();
+      const data = await res.json() as any;
       if (data?.results?.[0]) {
         const result = data.results[0];
         out.push({
@@ -68,7 +68,7 @@ async function fetchFinnhubQuotes(symbols: string[]): Promise<Quote[]> {
         console.error(`Finnhub API error for ${symbol}:`, res.statusText);
         continue;
       }
-      const data = await res.json();
+      const data = await res.json() as any;
       if (typeof data?.c === 'number') {
         out.push({
           symbol: symbol.toUpperCase(),
@@ -112,5 +112,4 @@ export const marketDataProvider = {
 export async function fetchQuotes(symbols: string[]): Promise<Quote[]> {
   return marketDataProvider.fetchQuotes(symbols);
 }
-
 

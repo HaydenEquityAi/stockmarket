@@ -19,10 +19,10 @@ export const getNewsByStock = async (req: Request, res: Response) => {
       .sort({ publishedAt: -1 })
       .limit(10);
     const transformedNews = news.map(item => {
-      const newsObj = item.toObject();
+      const newsObj = item.toObject() as any;
       return {
         ...newsObj,
-        id: newsObj.newsId || newsObj._id.toString(),
+        id: newsObj.newsId || (newsObj._id ? newsObj._id.toString() : ''),
         newsId: undefined
       };
     });

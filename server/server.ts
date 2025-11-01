@@ -50,13 +50,14 @@ wss.on('connection', (ws) => {
   const client = ws as ClientWithMeta;
   console.log('🔌 New WebSocket client connected');
 
-  ws.on('message', (message) => {
+  ws.on('message', (message: Buffer) => {
     try {
       const data = JSON.parse(message.toString());
 
       if (data.type === 'subscribe' && data.symbol) {
-        client.symbol = data.symbol.toUpperCase();
-        subscriptions.set(client, client.symbol);
+        const symbol = String(data.symbol).toUpperCase();
+        client.symbol = symbol;
+        subscriptions.set(client, symbol);
         console.log(`📊 Client subscribed to ${client.symbol}`);
         ws.send(JSON.stringify({ type: 'subscribed', symbol: client.symbol, message: `Subscribed to ${client.symbol}` }));
       }

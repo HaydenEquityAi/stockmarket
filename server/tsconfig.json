@@ -11,9 +11,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": ["**/*"],
+  "include": ["**/*", "types/**/*"],
   "exclude": ["node_modules", "dist", "../dist"]
 }
 
