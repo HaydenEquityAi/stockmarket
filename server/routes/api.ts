@@ -222,8 +222,6 @@ router.post('/analysis/screen', screenStocks);
 router.get('/analysis/signals', getAISignals);
 router.get('/analysis/technical/:symbol', getTechnicalIndicators);
 
-export default router;
-
 // Prices
 router.get('/prices/quote/:symbol', async (req, res) => {
   try {
@@ -252,4 +250,6 @@ router.post('/prices/quotes', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch quotes' });
   }
 });
+
+export default router;
 

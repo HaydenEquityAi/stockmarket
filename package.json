@@ -58,7 +58,8 @@
       "scripts": {
             "dev": "vite",
             "build": "npx vite build",
-            "preview": "vite preview"
+            "preview": "vite preview",
+            "deploy": "powershell -ExecutionPolicy Bypass -File ./deploy-frontend.ps1"
       },
       "engines": {
             "node": "20.x"
